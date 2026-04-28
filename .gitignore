@@ -1,0 +1,66 @@
+# ============================================================
+# Secrets — NEVER commit
+# ============================================================
+.env
+*.env
+!.env.example
+
+# ============================================================
+# Python
+# ============================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# ============================================================
+# Data — never commit raw or processed datasets
+# Reviewers reproduce the data by running the ingestion script
+# ============================================================
+data/raw/*
+data/processed/*
+data/qa/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/qa/.gitkeep
+!data/qa/qa_report.md
+!data/qa/qa_report.json
+*.parquet
+
+# ============================================================
+# Outputs — figures/tables/predictions ARE committed (final artifacts)
+# But intermediate cruft is not
+# ============================================================
+outputs/**/*.tmp
+outputs/**/*.pkl
+
+# ============================================================
+# Notebooks
+# ============================================================
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
+
+# ============================================================
+# OS noise
+# ============================================================
+.DS_Store
+Thumbs.db
+
+# ============================================================
+# Editor / IDE
+# ============================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ============================================================
+# uv
+# ============================================================
+# .python-version IS committed (pins Python version for reproducibility)
+# uv.lock IS committed (pins dependency versions)

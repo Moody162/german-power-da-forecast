@@ -1,0 +1,25 @@
+[project]
+name = "german-power-da-forecast"
+version = "0.1.0"
+description = "End-to-end forecasting pipeline for German Day-Ahead electricity prices using ENTSO-E data, with prompt curve translation and an LLM-driven automation component."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "anthropic>=0.97.0",
+    "entsoe-py>=0.8.0",
+    "lightgbm>=4.6.0",
+    "matplotlib>=3.10.9",
+    "numpy>=2.4.4",
+    "pandas>=3.0.2",
+    "pyarrow>=24.0.0",
+    "pydantic>=2.13.3",
+    "python-dotenv>=1.2.2",
+    "scikit-learn>=1.8.0",
+]
+
+[dependency-groups]
+dev = [
+    "jupyter>=1.1.1",
+    "pytest>=9.0.3",
+    "ruff>=0.15.12",
+]
