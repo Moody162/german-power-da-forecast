@@ -45,6 +45,7 @@ uv run python scripts/05_ai_component.py
 ---
 
 ## Project structure
+```
 src/
 ├── ingestion/      ENTSO-E API pulls
 ├── qa/             data quality checks
@@ -57,6 +58,7 @@ outputs/            figures, tables, predictions, LLM logs
 report/             written report
 scripts/            pipeline entry points
 tests/              DST + leakage tests
+```
 
 ---
 
