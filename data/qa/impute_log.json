@@ -1,0 +1,376 @@
+{
+  "imputed_count": 53,
+  "entries": [
+    {
+      "column": "solar_forecast_mw",
+      "timestamp_utc": "2023-10-28 22:00:00+00:00",
+      "timestamp_local": "2023-10-29 00:00:00+02:00",
+      "before": null,
+      "after": 0.0
+    },
+    {
+      "column": "solar_forecast_mw",
+      "timestamp_utc": "2024-10-26 22:00:00+00:00",
+      "timestamp_local": "2024-10-27 00:00:00+02:00",
+      "before": null,
+      "after": 0.0
+    },
+    {
+      "column": "solar_forecast_mw",
+      "timestamp_utc": "2025-10-25 22:00:00+00:00",
+      "timestamp_local": "2025-10-26 00:00:00+02:00",
+      "before": null,
+      "after": 0.0
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-21 23:00:00+00:00",
+      "timestamp_local": "2022-02-22 00:00:00+01:00",
+      "before": null,
+      "after": 57962.3818
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 00:00:00+00:00",
+      "timestamp_local": "2022-02-22 01:00:00+01:00",
+      "before": null,
+      "after": 57900.8911
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 01:00:00+00:00",
+      "timestamp_local": "2022-02-22 02:00:00+01:00",
+      "before": null,
+      "after": 57839.4004
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 02:00:00+00:00",
+      "timestamp_local": "2022-02-22 03:00:00+01:00",
+      "before": null,
+      "after": 57777.9097
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 03:00:00+00:00",
+      "timestamp_local": "2022-02-22 04:00:00+01:00",
+      "before": null,
+      "after": 57716.419
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 04:00:00+00:00",
+      "timestamp_local": "2022-02-22 05:00:00+01:00",
+      "before": null,
+      "after": 57654.9283
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 05:00:00+00:00",
+      "timestamp_local": "2022-02-22 06:00:00+01:00",
+      "before": null,
+      "after": 57593.4376
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 06:00:00+00:00",
+      "timestamp_local": "2022-02-22 07:00:00+01:00",
+      "before": null,
+      "after": 57531.9469
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 07:00:00+00:00",
+      "timestamp_local": "2022-02-22 08:00:00+01:00",
+      "before": null,
+      "after": 57470.4562
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 08:00:00+00:00",
+      "timestamp_local": "2022-02-22 09:00:00+01:00",
+      "before": null,
+      "after": 57408.9655
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 09:00:00+00:00",
+      "timestamp_local": "2022-02-22 10:00:00+01:00",
+      "before": null,
+      "after": 57347.4748
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 10:00:00+00:00",
+      "timestamp_local": "2022-02-22 11:00:00+01:00",
+      "before": null,
+      "after": 57285.9841
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 11:00:00+00:00",
+      "timestamp_local": "2022-02-22 12:00:00+01:00",
+      "before": null,
+      "after": 57224.4934
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 12:00:00+00:00",
+      "timestamp_local": "2022-02-22 13:00:00+01:00",
+      "before": null,
+      "after": 57163.0027
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 13:00:00+00:00",
+      "timestamp_local": "2022-02-22 14:00:00+01:00",
+      "before": null,
+      "after": 57101.512
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 14:00:00+00:00",
+      "timestamp_local": "2022-02-22 15:00:00+01:00",
+      "before": null,
+      "after": 57040.0213
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 15:00:00+00:00",
+      "timestamp_local": "2022-02-22 16:00:00+01:00",
+      "before": null,
+      "after": 56978.5306
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 16:00:00+00:00",
+      "timestamp_local": "2022-02-22 17:00:00+01:00",
+      "before": null,
+      "after": 56917.0399
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 17:00:00+00:00",
+      "timestamp_local": "2022-02-22 18:00:00+01:00",
+      "before": null,
+      "after": 56855.5492
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 18:00:00+00:00",
+      "timestamp_local": "2022-02-22 19:00:00+01:00",
+      "before": null,
+      "after": 56794.0585
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 19:00:00+00:00",
+      "timestamp_local": "2022-02-22 20:00:00+01:00",
+      "before": null,
+      "after": 56732.5678
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 20:00:00+00:00",
+      "timestamp_local": "2022-02-22 21:00:00+01:00",
+      "before": null,
+      "after": 56671.0771
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 21:00:00+00:00",
+      "timestamp_local": "2022-02-22 22:00:00+01:00",
+      "before": null,
+      "after": 56609.5864
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-02-22 22:00:00+00:00",
+      "timestamp_local": "2022-02-22 23:00:00+01:00",
+      "before": null,
+      "after": 56548.0957
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-23 23:00:00+00:00",
+      "timestamp_local": "2022-03-24 00:00:00+01:00",
+      "before": null,
+      "after": 52573.3483
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 00:00:00+00:00",
+      "timestamp_local": "2022-03-24 01:00:00+01:00",
+      "before": null,
+      "after": 52463.1691
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 01:00:00+00:00",
+      "timestamp_local": "2022-03-24 02:00:00+01:00",
+      "before": null,
+      "after": 52352.9899
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 02:00:00+00:00",
+      "timestamp_local": "2022-03-24 03:00:00+01:00",
+      "before": null,
+      "after": 52242.8107
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 03:00:00+00:00",
+      "timestamp_local": "2022-03-24 04:00:00+01:00",
+      "before": null,
+      "after": 52132.6315
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 04:00:00+00:00",
+      "timestamp_local": "2022-03-24 05:00:00+01:00",
+      "before": null,
+      "after": 52022.4523
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 05:00:00+00:00",
+      "timestamp_local": "2022-03-24 06:00:00+01:00",
+      "before": null,
+      "after": 51912.2731
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 06:00:00+00:00",
+      "timestamp_local": "2022-03-24 07:00:00+01:00",
+      "before": null,
+      "after": 51802.0939
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 07:00:00+00:00",
+      "timestamp_local": "2022-03-24 08:00:00+01:00",
+      "before": null,
+      "after": 51691.9147
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 08:00:00+00:00",
+      "timestamp_local": "2022-03-24 09:00:00+01:00",
+      "before": null,
+      "after": 51581.7355
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 09:00:00+00:00",
+      "timestamp_local": "2022-03-24 10:00:00+01:00",
+      "before": null,
+      "after": 51471.5563
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 10:00:00+00:00",
+      "timestamp_local": "2022-03-24 11:00:00+01:00",
+      "before": null,
+      "after": 51361.3771
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 11:00:00+00:00",
+      "timestamp_local": "2022-03-24 12:00:00+01:00",
+      "before": null,
+      "after": 51251.1979
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 12:00:00+00:00",
+      "timestamp_local": "2022-03-24 13:00:00+01:00",
+      "before": null,
+      "after": 51141.0187
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 13:00:00+00:00",
+      "timestamp_local": "2022-03-24 14:00:00+01:00",
+      "before": null,
+      "after": 51030.8395
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 14:00:00+00:00",
+      "timestamp_local": "2022-03-24 15:00:00+01:00",
+      "before": null,
+      "after": 50920.6603
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 15:00:00+00:00",
+      "timestamp_local": "2022-03-24 16:00:00+01:00",
+      "before": null,
+      "after": 50810.4811
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 16:00:00+00:00",
+      "timestamp_local": "2022-03-24 17:00:00+01:00",
+      "before": null,
+      "after": 50700.3019
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 17:00:00+00:00",
+      "timestamp_local": "2022-03-24 18:00:00+01:00",
+      "before": null,
+      "after": 50590.1227
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 18:00:00+00:00",
+      "timestamp_local": "2022-03-24 19:00:00+01:00",
+      "before": null,
+      "after": 50479.9435
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 19:00:00+00:00",
+      "timestamp_local": "2022-03-24 20:00:00+01:00",
+      "before": null,
+      "after": 50369.7643
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 20:00:00+00:00",
+      "timestamp_local": "2022-03-24 21:00:00+01:00",
+      "before": null,
+      "after": 50259.5851
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 21:00:00+00:00",
+      "timestamp_local": "2022-03-24 22:00:00+01:00",
+      "before": null,
+      "after": 50149.4059
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2022-03-24 22:00:00+00:00",
+      "timestamp_local": "2022-03-24 23:00:00+01:00",
+      "before": null,
+      "after": 50039.2267
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2023-10-28 22:00:00+00:00",
+      "timestamp_local": "2023-10-29 00:00:00+02:00",
+      "before": null,
+      "after": 40115.7088
+    },
+    {
+      "column": "load_forecast_mw",
+      "timestamp_utc": "2024-10-26 22:00:00+00:00",
+      "timestamp_local": "2024-10-27 00:00:00+02:00",
+      "before": null,
+      "after": 40024.8537
+    }
+  ]
+}

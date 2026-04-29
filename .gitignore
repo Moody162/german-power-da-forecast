@@ -28,6 +28,9 @@ data/qa/*
 !data/qa/.gitkeep
 !data/qa/qa_report.md
 !data/qa/qa_report.json
+!data/qa/qa_report_clean.md
+!data/qa/qa_report_clean.json
+!data/qa/impute_log.json
 
 # ============================================================
 # Outputs — figures/tables/predictions ARE committed (final artifacts)
