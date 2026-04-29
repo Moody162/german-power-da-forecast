@@ -19,23 +19,21 @@ venv/
 .mypy_cache/
 
 # ============================================================
-# Data — never commit raw or processed datasets
-# Reviewers reproduce the data by running the ingestion script
+# Data — raw parquets ARE committed (evaluator skips 15-min ingestion)
+# Processed data and QA outputs are generated, not committed (except reports)
 # ============================================================
-data/raw/*
 data/processed/*
 data/qa/*
-!data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/qa/.gitkeep
 !data/qa/qa_report.md
 !data/qa/qa_report.json
-*.parquet
 
 # ============================================================
 # Outputs — figures/tables/predictions ARE committed (final artifacts)
-# But intermediate cruft is not
+# Logs are runtime artifacts, not committed
 # ============================================================
+outputs/logs/*.log
 outputs/**/*.tmp
 outputs/**/*.pkl
 
@@ -64,3 +62,4 @@ Thumbs.db
 # ============================================================
 # .python-version IS committed (pins Python version for reproducibility)
 # uv.lock IS committed (pins dependency versions)
+CLAUDE.md
