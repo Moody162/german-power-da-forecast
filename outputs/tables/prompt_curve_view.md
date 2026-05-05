@@ -1,7 +1,7 @@
 # Prompt Curve Translation View — German DA Power (DE_LU)
 
 **Model data through:** 2026-05-04 23:00 UTC+02:00  
-**Generated:** 2026-05-04 23:46 UTC
+**Generated:** 2026-05-05 06:02 UTC
 
 > **Disclaimer:** Forward prices are illustrative hypothetical reference levels,
 > not real market quotes. Included solely to demonstrate the DA-to-curve
@@ -25,17 +25,17 @@
 
 | Period | Fair Value (€/MWh) | Forward (€/MWh) | Edge (€/MWh) | σ-multiple | Direction | Confidence |
 |--------|-------------------|----------------|-------------|-----------|-----------|------------|
-| Prompt Week | 94.89 | 76.00 | +18.89 | +2.07σ | **LONG** | High |
-| Prompt Month | 58.08 | 45.00 | +13.08 | +2.09σ | **LONG** | High |
+| Prompt Week | 100.02 | 76.00 | +24.02 | +2.63σ | **LONG** | High |
+| Prompt Month | 64.10 | 45.00 | +19.10 | +3.05σ | **LONG** | High |
 
 **Prompt Week — Desk Action**  
 Instrument: EEX prompt-week baseload forward | Position: **LONG**  
-Rationale: Model fair value (94.89 €/MWh) is 18.89 €/MWh above the illustrative forward (76.00 €/MWh). Buy the EEX prompt-week baseload forward to capture the 18.89 €/MWh edge on delivery-period settlement.  
+Rationale: Model fair value (100.02 €/MWh) is 24.02 €/MWh above the illustrative forward (76.00 €/MWh). Buy the EEX prompt-week baseload forward to capture the 24.02 €/MWh edge on delivery-period settlement.  
 Sizing: Full-size position — edge exceeds 1.96σ; model error unlikely to eliminate the edge.
 
 **Prompt Month — Desk Action**  
 Instrument: EEX prompt-month baseload forward | Position: **LONG**  
-Rationale: Model fair value (58.08 €/MWh) is 13.08 €/MWh above the illustrative forward (45.00 €/MWh). Buy the EEX prompt-month baseload forward to capture the 13.08 €/MWh edge on delivery-period settlement.  
+Rationale: Model fair value (64.10 €/MWh) is 19.10 €/MWh above the illustrative forward (45.00 €/MWh). Buy the EEX prompt-month baseload forward to capture the 19.10 €/MWh edge on delivery-period settlement.  
 Sizing: Full-size position — edge exceeds 1.96σ; model error unlikely to eliminate the edge.
 
 ---
@@ -45,18 +45,18 @@ Sizing: Full-size position — edge exceeds 1.96σ; model error unlikely to elim
 
 | Period | Fair Value (€/MWh) | Forward (€/MWh) | Edge (€/MWh) | σ-multiple | Direction | Confidence |
 |--------|-------------------|----------------|-------------|-----------|-----------|------------|
-| Prompt Week | 94.89 | 95.00 | -0.11 | -0.01σ | FLAT | Noise |
-| Prompt Month | 58.08 | 58.00 | +0.08 | +0.01σ | FLAT | Noise |
+| Prompt Week | 100.02 | 95.00 | +5.02 | +0.55σ | **LONG** | Low |
+| Prompt Month | 64.10 | 58.00 | +6.10 | +0.97σ | **LONG** | Low |
 
 **Prompt Week — Desk Action**  
-Instrument: EEX prompt-week baseload forward | Position: **FLAT**  
-Rationale: Edge of -0.11 €/MWh (-0.01σ) is within noise threshold. Model does not provide sufficient conviction to deviate from flat.  
-Sizing: No position. Revisit if the forward moves more than 1.28σ from fair value.
+Instrument: EEX prompt-week baseload forward | Position: **LONG**  
+Rationale: Model fair value (100.02 €/MWh) is 5.02 €/MWh above the illustrative forward (95.00 €/MWh). Buy the EEX prompt-week baseload forward to capture the 5.02 €/MWh edge on delivery-period settlement.  
+Sizing: Quarter-size position — edge exceeds 0.50σ; treat as indicative, not a conviction trade.
 
 **Prompt Month — Desk Action**  
-Instrument: EEX prompt-month baseload forward | Position: **FLAT**  
-Rationale: Edge of +0.08 €/MWh (0.01σ) is within noise threshold. Model does not provide sufficient conviction to deviate from flat.  
-Sizing: No position. Revisit if the forward moves more than 1.28σ from fair value.
+Instrument: EEX prompt-month baseload forward | Position: **LONG**  
+Rationale: Model fair value (64.10 €/MWh) is 6.10 €/MWh above the illustrative forward (58.00 €/MWh). Buy the EEX prompt-month baseload forward to capture the 6.10 €/MWh edge on delivery-period settlement.  
+Sizing: Quarter-size position — edge exceeds 0.50σ; treat as indicative, not a conviction trade.
 
 ---
 
@@ -65,18 +65,18 @@ Sizing: No position. Revisit if the forward moves more than 1.28σ from fair val
 
 | Period | Fair Value (€/MWh) | Forward (€/MWh) | Edge (€/MWh) | σ-multiple | Direction | Confidence |
 |--------|-------------------|----------------|-------------|-----------|-----------|------------|
-| Prompt Week | 94.89 | 107.00 | -12.11 | -1.33σ | **SHORT** | Moderate |
-| Prompt Month | 58.08 | 68.00 | -9.92 | -1.58σ | **SHORT** | Moderate |
+| Prompt Week | 100.02 | 107.00 | -6.98 | -0.76σ | **SHORT** | Low |
+| Prompt Month | 64.10 | 68.00 | -3.90 | -0.62σ | **SHORT** | Low |
 
 **Prompt Week — Desk Action**  
 Instrument: EEX prompt-week baseload forward | Position: **SHORT**  
-Rationale: Model fair value (94.89 €/MWh) is 12.11 €/MWh below the illustrative forward (107.00 €/MWh). Sell the EEX prompt-week baseload forward to capture the 12.11 €/MWh edge on delivery-period settlement.  
-Sizing: Half-size position — edge exceeds 1.28σ; meaningful conviction but room for model error.
+Rationale: Model fair value (100.02 €/MWh) is 6.98 €/MWh below the illustrative forward (107.00 €/MWh). Sell the EEX prompt-week baseload forward to capture the 6.98 €/MWh edge on delivery-period settlement.  
+Sizing: Quarter-size position — edge exceeds 0.50σ; treat as indicative, not a conviction trade.
 
 **Prompt Month — Desk Action**  
 Instrument: EEX prompt-month baseload forward | Position: **SHORT**  
-Rationale: Model fair value (58.08 €/MWh) is 9.92 €/MWh below the illustrative forward (68.00 €/MWh). Sell the EEX prompt-month baseload forward to capture the 9.92 €/MWh edge on delivery-period settlement.  
-Sizing: Half-size position — edge exceeds 1.28σ; meaningful conviction but room for model error.
+Rationale: Model fair value (64.10 €/MWh) is 3.90 €/MWh below the illustrative forward (68.00 €/MWh). Sell the EEX prompt-month baseload forward to capture the 3.90 €/MWh edge on delivery-period settlement.  
+Sizing: Quarter-size position — edge exceeds 0.50σ; treat as indicative, not a conviction trade.
 
 ---
 

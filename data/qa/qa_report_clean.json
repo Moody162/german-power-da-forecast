@@ -94,10 +94,10 @@
     "category": "missingness",
     "severity": "info",
     "passed": true,
-    "message": "solar_actual_mw: 0 NaN (0.0%) in train+test",
+    "message": "solar_actual_mw: 9 NaN (0.019%) in train+test",
     "details": {
-      "null_count": 0,
-      "null_pct": 0.0
+      "null_count": 9,
+      "null_pct": 0.019
     }
   },
   {
@@ -105,10 +105,10 @@
     "category": "missingness",
     "severity": "info",
     "passed": true,
-    "message": "load_actual_mw: 0 NaN (0.0%) in train+test",
+    "message": "load_actual_mw: 8 NaN (0.017%) in train+test",
     "details": {
-      "null_count": 0,
-      "null_pct": 0.0
+      "null_count": 8,
+      "null_pct": 0.017
     }
   },
   {
@@ -176,11 +176,11 @@
     "category": "missingness",
     "severity": "info",
     "passed": true,
-    "message": "solar_actual_mw: largest gap = 0h",
+    "message": "solar_actual_mw: largest gap = 9h",
     "details": {
-      "gap_hours": 0,
-      "gap_start": null,
-      "gap_end": null
+      "gap_hours": 9,
+      "gap_start": "2026-05-03 22:00:00+00:00",
+      "gap_end": "2026-05-04 06:00:00+00:00"
     }
   },
   {
@@ -188,11 +188,11 @@
     "category": "missingness",
     "severity": "info",
     "passed": true,
-    "message": "load_actual_mw: largest gap = 0h",
+    "message": "load_actual_mw: largest gap = 8h",
     "details": {
-      "gap_hours": 0,
-      "gap_start": null,
-      "gap_end": null
+      "gap_hours": 8,
+      "gap_start": "2026-05-03 22:00:00+00:00",
+      "gap_end": "2026-05-04 05:00:00+00:00"
     }
   },
   {
@@ -602,7 +602,7 @@
         "2026-02": 0,
         "2026-03": 0,
         "2026-04": 0,
-        "2026-05": 0
+        "2026-05": 9
       },
       "load_actual_mw": {
         "2021-01": 0,
@@ -669,7 +669,7 @@
         "2026-02": 0,
         "2026-03": 0,
         "2026-04": 0,
-        "2026-05": 0
+        "2026-05": 8
       }
     }
   },
@@ -798,7 +798,7 @@
     "passed": true,
     "message": "solar_actual_mw \u2208 [0, 80000]",
     "details": {
-      "min": 0.009,
+      "min": 0.00575,
       "max": 54169.05,
       "n_below_range": 0,
       "n_above_range": 0
@@ -850,7 +850,7 @@
         "2023": 93.0,
         "2024": -20.9,
         "2025": 193.2,
-        "2026": -228.0
+        "2026": -252.9
       },
       "solar": {
         "2021": -31.1,
@@ -858,7 +858,7 @@
         "2023": -16.7,
         "2024": -122.4,
         "2025": 13.7,
-        "2026": 29.0
+        "2026": 31.7
       },
       "load": {
         "2021": 1890.9,
@@ -866,7 +866,7 @@
         "2023": -180.5,
         "2024": 397.2,
         "2025": -395.9,
-        "2026": -99.3
+        "2026": -118.7
       }
     }
   },

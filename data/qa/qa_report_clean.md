@@ -1,6 +1,6 @@
 # QA Report
 
-**Dataset shape**: 46,775 rows × 9 columns
+**Dataset shape**: 46,799 rows × 9 columns
 
 **Checks run**: 35  |  **Critical failures**: 0  |  **Warnings**: 0
 
@@ -23,15 +23,15 @@
 | `no_nulls_solar_forecast_mw` | 🔴 critical | ✓ | solar_forecast_mw: 0 NaN in train+test |
 | `no_nulls_load_forecast_mw` | 🔴 critical | ✓ | load_forecast_mw: 0 NaN in train+test |
 | `nulls_wind_actual_mw` | 🟢 info | ✓ | wind_actual_mw: 0 NaN (0.0%) in train+test |
-| `nulls_solar_actual_mw` | 🟢 info | ✓ | solar_actual_mw: 0 NaN (0.0%) in train+test |
-| `nulls_load_actual_mw` | 🟢 info | ✓ | load_actual_mw: 0 NaN (0.0%) in train+test |
+| `nulls_solar_actual_mw` | 🟢 info | ✓ | solar_actual_mw: 9 NaN (0.019%) in train+test |
+| `nulls_load_actual_mw` | 🟢 info | ✓ | load_actual_mw: 8 NaN (0.017%) in train+test |
 | `max_gap_da_price_eur_mwh` | 🟢 info | ✓ | da_price_eur_mwh: largest gap = 0h |
 | `max_gap_wind_forecast_mw` | 🟢 info | ✓ | wind_forecast_mw: largest gap = 0h |
 | `max_gap_solar_forecast_mw` | 🟢 info | ✓ | solar_forecast_mw: largest gap = 0h |
 | `max_gap_load_forecast_mw` | 🟢 info | ✓ | load_forecast_mw: largest gap = 0h |
 | `max_gap_wind_actual_mw` | 🟢 info | ✓ | wind_actual_mw: largest gap = 0h |
-| `max_gap_solar_actual_mw` | 🟢 info | ✓ | solar_actual_mw: largest gap = 0h |
-| `max_gap_load_actual_mw` | 🟢 info | ✓ | load_actual_mw: largest gap = 0h |
+| `max_gap_solar_actual_mw` | 🟢 info | ✓ | solar_actual_mw: largest gap = 9h |
+| `max_gap_load_actual_mw` | 🟢 info | ✓ | load_actual_mw: largest gap = 8h |
 | `monthly_missingness` | 🟢 info | ✓ | Per-month NaN counts per column |
 
 ## Duplicates
