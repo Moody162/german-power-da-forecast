@@ -1,10 +1,11 @@
 """
 Runs the full pipeline from scratch.
-Deletes all generated outputs before starting so every run is reproducible.
+Deletes all generated outputs (except raw data) before starting so every
+run is reproducible. Ingestion is incremental — only missing data is fetched.
 
 Usage:
-    uv run run_pipeline.py                 # clean + full run
-    uv run run_pipeline.py --skip-ingest   # reuse existing raw data (faster)
+    uv run run_pipeline.py              # clean outputs, keep raw data (incremental ingest)
+    uv run run_pipeline.py --full-clean # delete everything including raw data (full re-ingest)
 """
 
 import argparse
@@ -27,25 +28,25 @@ CLEAN_DIRS = [
 ]
 
 SCRIPTS = [
-    ("01_ingest.py",               "Ingesting data from ENTSO-E (~15 min)"),
-    ("02_merge.py",                "Merging series"),
-    ("03_qa.py",                   "Running QA checks"),
-    ("04_clean.py",                "Cleaning and imputing"),
-    ("05_features.py",             "Engineering features"),
-    ("06_train.py",                "Training model"),
-    ("07_curve.py",                "Running recursive forecast"),
-    ("08_curve_view.py",           "Building curve view"),
-    ("09_drivers_commentary.py",   "Generating LLM commentary"),
+    ("01_ingest.py",             "Ingesting data from ENTSO-E (incremental)"),
+    ("02_merge.py",              "Merging series"),
+    ("03_qa.py",                 "Running QA checks"),
+    ("04_clean.py",              "Cleaning and imputing"),
+    ("05_features.py",           "Engineering features"),
+    ("06_train.py",              "Training model"),
+    ("07_curve.py",              "Running recursive forecast"),
+    ("08_curve_view.py",         "Building curve view"),
+    ("09_drivers_commentary.py", "Generating LLM commentary"),
 ]
 
 
-def clean(skip_ingest: bool) -> None:
+def clean(full: bool) -> None:
     print("=== Cleaning generated outputs ===")
     for d in CLEAN_DIRS:
         if d.exists():
             shutil.rmtree(d)
             print(f"  removed {d.relative_to(PROJECT_ROOT)}")
-    if not skip_ingest:
+    if full:
         raw = PROJECT_ROOT / "data" / "raw"
         if raw.exists():
             shutil.rmtree(raw)
@@ -66,25 +67,16 @@ def run_script(name: str, label: str, step: int, total: int) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--skip-ingest",
+        "--full-clean",
         action="store_true",
-        help="Skip ingestion and reuse existing raw data.",
+        help="Also delete raw data, forcing a full re-ingest from ENTSO-E (~15 min).",
     )
     args = parser.parse_args()
 
-    clean(args.skip_ingest)
-
-    scripts = SCRIPTS if not args.skip_ingest else SCRIPTS[1:]
-    total = len(SCRIPTS)
-
+    clean(full=args.full_clean)
     print("\n=== Running pipeline ===")
-
-    if args.skip_ingest:
-        print(f"\n[1/{total}] Skipping ingestion (--skip-ingest)")
-
-    for i, (name, label) in enumerate(scripts, start=1 if not args.skip_ingest else 2):
-        run_script(name, label, i, total)
-
+    for i, (name, label) in enumerate(SCRIPTS, start=1):
+        run_script(name, label, i, len(SCRIPTS))
     print("\n=== Pipeline complete ===")
 
 

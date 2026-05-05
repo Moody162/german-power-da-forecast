@@ -53,11 +53,29 @@ def run(client: EntsoePandasClient, start, end, out_dir: Path) -> None:
     for name, fetch_fn in SERIES:
         path = out_dir / f"{name}.parquet"
         print(f"\n{'='*60}\nFetching {name}\n{'='*60}")
-        df = fetch_fn(client, start, end)
-        if isinstance(df, pd.Series):
-            df = df.to_frame()
-        df.to_parquet(path)
-        print(f"Saved {len(df):,} rows → {path}")
+
+        if path.exists():
+            existing = pd.read_parquet(path)
+            last_ts = existing.index.max()
+            if last_ts >= end:
+                print(f"Already up to date (last={last_ts}), skipping.")
+                continue
+            fetch_start = last_ts.floor("h") + pd.Timedelta(hours=1)
+            print(f"Incremental fetch: {fetch_start.date()} → {end.date()}")
+            new_data = fetch_fn(client, fetch_start, end)
+            if isinstance(new_data, pd.Series):
+                new_data = new_data.to_frame()
+            combined = pd.concat([existing, new_data])
+            combined = combined[~combined.index.duplicated(keep="last")].sort_index()
+            combined.to_parquet(path)
+            print(f"Appended {len(new_data):,} rows → {path} (total {len(combined):,})")
+        else:
+            print(f"Full fetch: {start.date()} → {end.date()}")
+            df = fetch_fn(client, start, end)
+            if isinstance(df, pd.Series):
+                df = df.to_frame()
+            df.to_parquet(path)
+            print(f"Saved {len(df):,} rows → {path}")
 
 
 def main() -> None:

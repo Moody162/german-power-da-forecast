@@ -41,16 +41,18 @@ Use the provided Python script, which works on all platforms (macOS, Linux, Wind
 uv run run_pipeline.py
 ```
 
-Ingestion hits the ENTSO-E API and takes approximately 15 minutes. If raw data already exists and you only want to re-run the downstream steps:
+Ingestion is **incremental** — if raw data already exists, only the missing window is fetched from ENTSO-E. A full first-time ingestion takes approximately 15 minutes; subsequent runs are much faster.
+
+To force a full re-ingest from scratch (deletes raw data too):
 
 ```bash
-uv run run_pipeline.py --skip-ingest
+uv run run_pipeline.py --full-clean
 ```
 
 To run steps individually instead:
 
 ```bash
-uv run scripts/01_ingest.py        # fetch raw data from ENTSO-E (~15 min)
+uv run scripts/01_ingest.py        # fetch raw data from ENTSO-E (incremental, ~15 min first run)
 uv run scripts/02_merge.py         # align and merge all series
 uv run scripts/03_qa.py            # run QA checks on raw data
 uv run scripts/04_clean.py         # impute and clean
