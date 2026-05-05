@@ -17,6 +17,7 @@ Outputs:
     outputs/predictions/submission.csv
     outputs/tables/cv_metrics.csv
     outputs/tables/feature_importance.csv
+    outputs/tables/model_performance.md
     outputs/figures/oof_actual_vs_predicted.png
     outputs/figures/feature_importance.png
 """
@@ -140,6 +141,11 @@ def main() -> None:
     baseline_cv  = evaluate(oof["y_true"], baseline_oof)
     print_metrics("mean across folds", baseline_cv)
 
+    # OOF aggregate: all folds stacked, evaluated as one
+    oof_agg_lgbm = evaluate(oof["y_true"], oof["y_pred"])
+    print("\nLightGBM OOF aggregate (all folds combined):")
+    print_metrics("all folds combined", oof_agg_lgbm)
+
     # ── Save CV metrics table ─────────────────────────────────────────────────
     cv_rows = []
     for r in cv_results:
@@ -181,6 +187,11 @@ def main() -> None:
 
     # ── Test set predictions → submission.csv ─────────────────────────────────
     test_pred = predict(final_model, test)
+    test_metrics_lgbm = evaluate(test[TARGET_COL], test_pred)
+    test_metrics_base = evaluate(test[TARGET_COL], predict_baseline(test))
+    print("\nTest set metrics:")
+    print_metrics("LightGBM", test_metrics_lgbm)
+    print_metrics("Baseline", test_metrics_base)
     local_times = test_pred.index.tz_convert("Europe/Berlin")
     submission = pd.DataFrame({
         "id":               test_pred.index.strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -205,6 +216,73 @@ def main() -> None:
     print(f"{'Model':<30}  {'MAE':>8}  {'RMSE':>8}  {'TailMAE':>10}")
     print(f"{'Baseline (lag-168h)':<30}  {baseline_cv['mae']:>8.2f}  {baseline_cv['rmse']:>8.2f}  {baseline_cv['tail_mae']:>10.2f}")
     print(f"{'LightGBM (CV mean)':<30}  {cv_agg['mae']:>8.2f}  {cv_agg['rmse']:>8.2f}  {cv_agg['tail_mae']:>10.2f}")
+
+    # ── Model performance markdown ────────────────────────────────────────────
+    def _pct_improvement(lgbm_val, base_val):
+        return round((1 - lgbm_val / base_val) * 100, 1)
+
+    train_start_str = train.index[0].tz_convert("Europe/Berlin").strftime("%Y-%m-%d")
+    train_end_str   = train.index[-1].tz_convert("Europe/Berlin").strftime("%Y-%m-%d")
+    test_start_str  = test.index[0].tz_convert("Europe/Berlin").strftime("%Y-%m-%d")
+    test_end_str    = test.index[-1].tz_convert("Europe/Berlin").strftime("%Y-%m-%d")
+    oof_start_str   = oof.index[0].tz_convert("Europe/Berlin").strftime("%Y-%m-%d")
+    oof_end_str     = oof.index[-1].tz_convert("Europe/Berlin").strftime("%Y-%m-%d")
+
+    lines = [
+        "# Model Performance",
+        "",
+        "**Baseline:** Last-week-same-hour (price_lag_168h).  ",
+        "**Model:** LightGBM, expanding-window walk-forward CV with early stopping.  ",
+        "**Tail MAE:** MAE restricted to the top and bottom 5% of actual prices (price spikes and negative hours).",
+        "",
+        "---",
+        "",
+        "## Summary",
+        "",
+        "| Evaluation window | Model | MAE (€/MWh) | RMSE (€/MWh) | Tail MAE (€/MWh) |",
+        "|---|---|---|---|---|",
+        f"| CV OOF aggregate ({oof_start_str} → {oof_end_str}, {len(cv_results)} folds) "
+        f"| Baseline | {baseline_cv['mae']:.2f} | {baseline_cv['rmse']:.2f} | {baseline_cv['tail_mae']:.2f} |",
+        f"| CV OOF aggregate ({oof_start_str} → {oof_end_str}, {len(cv_results)} folds) "
+        f"| LightGBM | {oof_agg_lgbm['mae']:.2f} | {oof_agg_lgbm['rmse']:.2f} | {oof_agg_lgbm['tail_mae']:.2f} |",
+        f"| Test set ({test_start_str} → {test_end_str}) "
+        f"| Baseline | {test_metrics_base['mae']:.2f} | {test_metrics_base['rmse']:.2f} | {test_metrics_base['tail_mae']:.2f} |",
+        f"| Test set ({test_start_str} → {test_end_str}) "
+        f"| LightGBM | {test_metrics_lgbm['mae']:.2f} | {test_metrics_lgbm['rmse']:.2f} | {test_metrics_lgbm['tail_mae']:.2f} |",
+        "",
+        "> **CV OOF aggregate** stacks all out-of-fold predictions across all folds and evaluates them as one. "
+        "**CV fold mean** (per-fold table below) is the mean of each fold's individual MAE — a slightly different number. "
+        "The aggregate is the more conservative and representative figure.",
+        "",
+        "---",
+        "",
+        "## Per-Fold CV Results",
+        "",
+        f"Training window: {train_start_str} → {train_end_str}  ",
+        f"Minimum initial training window: 2 years (17,520 hours). Each fold expands by 720 hours.",
+        "",
+        "| Fold | Val Start | Val End | LightGBM MAE | LightGBM RMSE | LightGBM Tail MAE | Baseline MAE | Baseline RMSE | Baseline Tail MAE |",
+        "|---|---|---|---|---|---|---|---|---|",
+    ]
+
+    for r in cv_results:
+        bl = cv_df.loc[cv_df["fold"] == r.fold].iloc[0]
+        lines.append(
+            f"| {r.fold} | {r.val_start.date()} | {r.val_end.date()} "
+            f"| {r.metrics['mae']:.2f} | {r.metrics['rmse']:.2f} | {r.metrics['tail_mae']:.2f} "
+            f"| {bl['baseline_mae']:.2f} | {bl['baseline_rmse']:.2f} | {bl['baseline_tail_mae']:.2f} |"
+        )
+
+    lines += [
+        "",
+        f"| **Mean** | | "
+        f"| **{cv_agg['mae']:.2f}** | **{cv_agg['rmse']:.2f}** | **{cv_agg['tail_mae']:.2f}** "
+        f"| **{baseline_cv['mae']:.2f}** | **{baseline_cv['rmse']:.2f}** | **{baseline_cv['tail_mae']:.2f}** |",
+    ]
+
+    md_path = TABLES_DIR / "model_performance.md"
+    md_path.write_text("\n".join(lines), encoding="utf-8")
+    print(f"Model performance report → {md_path}")
 
 
 if __name__ == "__main__":
