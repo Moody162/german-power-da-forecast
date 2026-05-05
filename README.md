@@ -47,9 +47,16 @@ sudo apt update && sudo apt install -y python3.13 python3.13-venv
 ```
 
 **Windows**
-Download and run the installer from [python.org/downloads](https://www.python.org/downloads/). During installation, check **"Add Python to PATH"** before clicking Install. After installation, open a new terminal and verify:
+
+Download and run the installer from [python.org/downloads](https://www.python.org/downloads/). During installation, check **"Add Python to PATH"** before clicking Install.
+
+After installation, open a new terminal and run:
 ```
-python --version
+py -3.13 --version
+```
+This should print `Python 3.13.x`. Use `py -3.13` rather than `python` on Windows — if you have multiple Python versions installed, `python` may still point to an older one. This does not matter for the pipeline: `uv` reads the `requires-python` setting from `pyproject.toml` and automatically selects Python 3.13 when you run `uv sync` or `uv run`. You can confirm it found the right version by running (after installing `uv` in the next step):
+```
+uv python list
 ```
 
 ---
@@ -93,7 +100,7 @@ Two API keys are required before the pipeline can run:
 ### 4. Clone and install
 
 ```bash
-git clone git@github.com:Moody162/german-power-da-forecast.git
+git clone https://github.com/Moody162/german-power-da-forecast.git
 cd german-power-da-forecast
 uv sync
 cp .env.example .env

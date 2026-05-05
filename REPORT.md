@@ -9,7 +9,7 @@ fares.mohamad1602@gmail.com
 
 ### Market and Data Source
 
-Germany (DE_LU bidding zone) was chosen as the target market. It is the largest European power market by volume, has the most complete and consistent ENTSO-E coverage, and its price dynamics are dominated by wind and solar — the two cleanest publicly available fundamental drivers. All data was sourced from the [ENTSO-E Transparency Platform REST API](https://documenter.getpostman.com/view/7009892/2s93JtP3F6) via the `entsoe-py` Python client. Full endpoint documentation, including article numbers, `entsoe-py` methods, and direct knowledge base links, is in `docs/api_endpoints.md`.
+Germany (DE_LU) was chosen as the target market: largest European power market by volume, most complete ENTSO-E coverage, price dynamics dominated by wind and solar — the cleanest publicly available fundamental drivers. All data was sourced from the [ENTSO-E Transparency Platform REST API](https://documenter.getpostman.com/view/7009892/2s93JtP3F6) via the `entsoe-py` Python client. Full endpoint documentation in `docs/api_endpoints.md`.
 
 Five series were collected at hourly resolution:
 
@@ -21,7 +21,7 @@ Five series were collected at hourly resolution:
 | Actual wind and solar generation | 16.1.B&C | Training features (not used at inference) |
 | Actual total load | 6.1.A | Training features (not used at inference) |
 
-The training window spans **2021-01-01 to 2025-06-30**, and the test window runs from **2025-07-01 to the day before the ingestion script is run** (dynamic). All series except DA prices are published at 15-minute resolution by ENTSO-E and are resampled to hourly means in the merge layer. DA prices were hourly until October 2025, when ENTSO-E transitioned DE_LU to 15-minute settlement; the same resampling step handles both resolutions without branching logic. Requests are issued in 90-day chunks — the most conservative safe limit across all five endpoints — to stay within the API's response size ceiling.
+Training window: **2021-01-01 → 2025-06-30**. Test window: **2025-07-01 → yesterday** (dynamic). All series except DA prices are published at 15-minute resolution and resampled to hourly means in the merge layer. DA prices transitioned to 15-minute settlement in October 2025; the same resampling step handles both resolutions. Requests are issued in 90-day chunks to stay within the API's response size ceiling. The fetcher retries each chunk up to 3 times with exponential backoff; a chunk that fails all attempts raises an error rather than silently saving a gap. Despite this, the exact dataset fetched on any given run may differ marginally due to transient ENTSO-E API errors (e.g. 503s) that are outside pipeline control.
 
 ### Timezone and DST Handling
 
@@ -31,18 +31,11 @@ All pipeline boundary timestamps are defined as `tz="Europe/Berlin"` so that tra
 - **Fall back (25-hour day, late October):** `entsoe-py` returns a UTC DatetimeIndex, so the two Berlin "02:00" occurrences on a fall-back day are stored as two distinct UTC timestamps (`00:00 UTC` and `01:00 UTC`) — both are correctly preserved.
 - **Join alignment:** All series are converted to UTC before the left-join on the price index. This eliminates DST ambiguity at the join level. A `timestamp_local` (Europe/Berlin) column is preserved separately as the source for calendar features, ensuring that hour-of-day, day-of-week, and month features reflect Berlin local time rather than UTC offsets.
 
-The QA pipeline verified 6 correct 23-hour days (all in March) and 5 correct 25-hour days (all in October), with no unexpected day lengths across the full dataset.
+QA verified 6 correct 23-hour days (March) and 5 correct 25-hour days (October) across the full dataset.
 
 ### Data Quality
 
-35 automated checks were run on both the raw merged dataset and the cleaned dataset using a dedicated QA module (`src/qa/`). Full reports are at `data/qa/qa_report.md` and `data/qa/qa_report_clean.md`. After cleaning, **all 35 checks passed with zero critical failures and zero warnings**.
-
-**Checks covered:**
-- *Structural:* index monotonicity, hourly frequency, required columns present, valid dataset labels
-- *Missingness:* per-column NaN counts and maximum gap lengths for all 7 series
-- *Duplicates:* no duplicate UTC timestamps; DST day-length verification
-- *Value sanity:* physical bounds on all series; nighttime solar sanity check
-- *Cross-series:* forecast bias by year, negative price hour count, renewable surplus hours
+35 automated checks were run on both the raw and cleaned datasets (`src/qa/`). Reports at `data/qa/qa_report.md` and `data/qa/qa_report_clean.md`. After cleaning, **all 35 checks passed**. Checks span five categories: structural (monotonicity, frequency, required columns), missingness (per-column NaN counts and max gap lengths), duplicates (UTC uniqueness, DST day-length verification), value sanity (physical bounds, nighttime solar), and cross-series (forecast bias by year, negative price hours, renewable surplus hours).
 
 **Findings on the raw dataset:**
 - 1,730 hours of negative DA prices across the full dataset — physically valid (excess renewable supply), not treated as outliers
@@ -54,12 +47,10 @@ The QA pipeline verified 6 correct 23-hour days (all in March) and 5 correct 25-
 - `load_actual_mw`: 8 NaN (0.017%), max gap 8 hours — actuals only, not a model input
 
 **Cleaning:**
-53 cells were imputed across 2 forecast columns using **time-based linear interpolation** (`pandas` `interpolate(method="time")`), with a 72-hour maximum gap limit. This method fits a straight line between the last known value before a gap and the first known value after it, weighted by actual time differences — more physically defensible than forward-fill for multi-hour gaps in load or solar. Gaps exceeding 72 hours are left as NaN. The full cell-level log is at `data/qa/impute_log.json`.
+53 cells were imputed across 2 forecast columns using **time-based linear interpolation** (72-hour max gap limit). This is more physically defensible than forward-fill for multi-hour gaps: it fits a straight line between the bounding known values, weighted by actual elapsed time. Full cell-level log: `data/qa/impute_log.json`.
 
-- `solar_forecast_mw`: 3 cells — a single missing midnight reading on each of three DST fall-back dates (Oct 2023, Oct 2024, Oct 2025). The adjacent values on either side of each gap were both 0 MW (solar at midnight), so interpolation correctly produced 0.
-- `load_forecast_mw`: 50 cells across four gaps:
-  - Two full-day ENTSO-E reporting outages (2022-02-22: 24 hours; 2022-03-24: 24 hours). Interpolation linearly transitioned between the load level at the start of each gap and the load level at the end, producing a smooth ramp consistent with the slow drift typical of hourly load forecasts.
-  - Two single missing midnight readings on DST fall-back dates (Oct 2023 and Oct 2024) — same pattern as solar, interpolated to the surrounding load level.
+- `solar_forecast_mw`: 3 cells — one missing midnight reading on each of three DST fall-back dates (Oct 2023, Oct 2024, Oct 2025). Adjacent values were both 0 MW, so interpolation correctly produced 0.
+- `load_forecast_mw`: 50 cells — two full-day ENTSO-E reporting outages (2022-02-22 and 2022-03-24, 24 hours each), plus two DST fall-back midnight readings (Oct 2023, Oct 2024). Interpolation produced a smooth load ramp across the outage windows, consistent with the slow drift of hourly load forecasts.
 
 No imputation was applied to the target variable (`da_price_eur_mwh`) or to actual-generation columns, which are used for QA cross-checks only and not as model inputs.
 
@@ -82,9 +73,9 @@ Option A was chosen: forecast next-day hourly DA prices, then aggregate to promp
 | Rolling price stats | `price_rolling_mean_7d`, `price_rolling_std_7d` |
 | Calendar | `hour`, `day_of_week`, `month`, `quarter`, `is_weekend` |
 
-**Leakage policy:** the DA auction closes at 12:00 CET and results are published by 12:55. Prices for day D are therefore known at prediction time for D-1. All price lag features use a minimum shift of 24 hours (`price_lag_24h`), and rolling statistics are computed on the 24h-shifted price series before the rolling window, ensuring the rolling window never touches the delivery day. DA wind, solar, and load forecasts for the delivery hour are published alongside the auction results and are safe to use directly.
+**Leakage policy:** DA prices for day D are published at 12:55 CET on D-1. All price lag features use a minimum shift of 24 hours, and rolling statistics are computed on the 24h-shifted series before the rolling window — so the window never touches the delivery day. DA forecasts are published alongside auction results and are safe to use directly.
 
-**Derived features:** `residual_load_mw` (total load minus wind and solar) captures the volume of gas-fired generation needed to clear the market — the primary determinant of the marginal price. `renewable_share` (wind + solar divided by load) adds a normalised measure of renewable penetration that carries signal independently of the raw MW values.
+**Derived features:** `residual_load_mw` (load minus wind and solar) directly captures the volume of gas-fired generation required to clear the market — the primary marginal price determinant. `renewable_share` adds a normalised penetration measure that carries signal independently of the raw MW values.
 
 ### Baseline
 
@@ -92,9 +83,9 @@ The baseline predicts each delivery hour's price as the actual price observed at
 
 ### LightGBM Model
 
-A `LGBMRegressor` was trained with the following key parameters: `n_estimators=1000`, `learning_rate=0.05`, `num_leaves=63`, `min_child_samples=50`, `subsample=0.8`, `colsample_bytree=0.8`, L1/L2 regularisation `0.1`, L2 regression objective with MAE as the early-stopping evaluation metric. Early stopping (patience 50 rounds) was applied during cross-validation using each fold's validation set as the eval set. The final model is trained on the full training set without early stopping.
+A `LGBMRegressor` with L2 regression objective, MAE early-stopping metric (patience 50), `n_estimators=1000`, `learning_rate=0.05`, `num_leaves=63`, `subsample=0.8`, `colsample_bytree=0.8`, L1/L2 regularisation 0.1. Early stopping uses each fold's validation set; the final model trains on the full training set without early stopping.
 
-**Walk-forward cross-validation:** an expanding-window design with 30 folds was used. The minimum initial training window is 2 years (17,520 hours), after which the validation window advances in 720-hour (~1 month) steps. Each fold trains on all data up to the fold boundary and predicts the next 720 hours — the training window grows each fold and never resets. Random splits were not used; they would allow the model to see future prices when predicting past ones, producing optimistically biased metrics.
+**Walk-forward cross-validation:** expanding-window design, 30 folds, 2-year minimum initial window, 720-hour (~1 month) validation steps. The training window grows each fold and never resets. Random splits were not used — they would allow the model to see future prices when predicting past ones, producing optimistically biased metrics.
 
 ### Performance
 
@@ -105,13 +96,13 @@ A `LGBMRegressor` was trained with the following key parameters: `n_estimators=1
 | Test set (2025-07-01 → 2026-05-04) | Baseline | 32.97 | 51.04 | 72.98 |
 | Test set (2025-07-01 → 2026-05-04) | LightGBM | 15.06 | 23.42 | 28.91 |
 
-The OOF aggregate stacks all 30 folds' predictions and evaluates them as one, which is more conservative than the mean of per-fold MAEs. LightGBM reduces MAE by 54% over the baseline on both the CV period and the held-out test set, confirming the improvement generalises. The tail MAE — computed on the top and bottom 5% of actual prices (spikes and negative hours) — follows the same pattern: LightGBM's 28 €/MWh tail error vs. the baseline's 58–73 €/MWh shows meaningful improvement on the extreme hours that matter most for trading.
+The OOF aggregate stacks all 30 folds as one, more conservative than averaging per-fold MAEs. LightGBM reduces MAE by 54% on both the CV period and the held-out test set, confirming the improvement generalises. The tail MAE (top and bottom 5% of actuals — spikes and negative hours) follows the same pattern: 28 €/MWh vs. 58–73 €/MWh for the baseline, which matters most for trading.
 
 Figures: `outputs/figures/oof_actual_vs_predicted.png` (OOF time series + scatter), `outputs/figures/feature_importance.png` (feature importance bar chart), `outputs/figures/test_actual_vs_predicted.png` (test set time series + scatter).
 
-**Submission:** test set predictions are saved to `outputs/predictions/submission.csv` with columns `id` (UTC timestamp), `timestamp_berlin` (Europe/Berlin local time), and `y_pred` (predicted DA price in €/MWh), covering 2025-07-01 to 2026-05-04.
+**Submission:** `outputs/predictions/submission.csv` — columns `id` (UTC), `timestamp_berlin`, `y_pred` (€/MWh), covering 2025-07-01 → 2026-05-04.
 
-**Feature importance and model limitations:** `price_lag_24h` accounts for 55.3% of total LightGBM gain, with `price_rolling_mean_7d` at 15.7% and `residual_load_mw` at 13.1%. The model is heavily lag-dominated, which explains its strong same-day performance but creates compounding uncertainty in the recursive multi-step forecast beyond 24 hours: each predicted price is appended to the buffer and used as a lag feature for the next step, so errors accumulate over the forecast horizon. The weekly and monthly delivery-period averages derived from this forecast carry wider uncertainty than the first-day predictions, which is reflected in the sigma bands described in Part 3. Full per-fold results are in `outputs/reports/model_performance.md`.
+**Feature importance and limitations:** `price_lag_24h` accounts for 55.3% of gain, `price_rolling_mean_7d` 15.7%, `residual_load_mw` 13.1%. The model is lag-dominated, which explains its strong same-day performance but creates compounding uncertainty in the recursive multi-step forecast: each predicted price feeds the next step's lag features, so errors accumulate. The weekly and monthly averages carry wider uncertainty than first-day predictions — reflected in the sigma bands in Part 3. Full per-fold results: `outputs/reports/model_performance.md`.
 
 ---
 
@@ -119,13 +110,11 @@ Figures: `outputs/figures/oof_actual_vs_predicted.png` (OOF time series + scatte
 
 ### Recursive Forecast and Period Aggregation
 
-The final model is applied recursively from `TEST_END + 1h` through the end of the prompt month. ENTSO-E DA wind, solar, and load forecasts are only published at the 24-hour horizon; beyond that, the pipeline uses **climatological proxies** — training-set means grouped by `(month, hour-of-day)` — as driver inputs. A price buffer seeded with the last 200 actual prices grows as each predicted value is appended, feeding the lag and rolling features at each step.
-
-Hourly predictions are aggregated by simple mean within each delivery window: the **Prompt Week** (next full ISO Mon–Sun week after test end) and the **Prompt Month** (next full calendar month). The fair-value estimate is the expected baseload average for that delivery period under the model's fundamental assumptions.
+The final model is applied recursively from `TEST_END + 1h` through the end of the prompt month. Beyond the 24-hour horizon, ENTSO-E forecasts are unavailable, so driver inputs use **climatological proxies** — training-set means grouped by `(month, hour-of-day)`. A price buffer seeded with the last 200 actuals grows as each prediction is appended, feeding lag and rolling features at each step. Hourly predictions are averaged within each delivery window (Prompt Week: next full ISO Mon–Sun; Prompt Month: next full calendar month).
 
 ### Uncertainty Model
 
-Sigma for each period is derived from the OOF residuals produced during cross-validation. Residuals are resampled to the delivery-period frequency (weekly or monthly) and the standard deviation of those period-mean residuals is taken as sigma. This captures the typical error of a **period-average** forecast — the relevant quantity for delivery-period trading. Confidence intervals use ±1.28σ (80%) and ±1.96σ (95%).
+Sigma is derived from OOF residuals resampled to delivery-period frequency (weekly or monthly). The standard deviation of those period-mean residuals captures the typical error of a **period-average** forecast — the quantity relevant for delivery-period trading. CIs: ±1.28σ (80%), ±1.96σ (95%).
 
 Current fair-value estimates (model data through 2026-05-04):
 
@@ -147,7 +136,7 @@ The edge (fair value minus forward price) is expressed in sigma-multiples to nor
 | Low | 0.50σ – 1.28σ | Quarter size — indicative only |
 | Noise | < 0.50σ | Flat |
 
-A positive edge (fair value above forward) generates a long signal on the EEX baseload forward for that delivery period; a negative edge generates a short. For example, under a bearish market scenario where the prompt week forward is at 76 €/MWh, the edge of +24 €/MWh (+2.6σ) exceeds the high-confidence threshold and the desk buys the prompt-week forward at full size. If the forward is near fair value, edge falls within noise and no position is taken. Full scenario outputs — including rationale and sizing notes for three market scenarios — are in `outputs/reports/prompt_curve_view.md`.
+A positive edge (fair value above forward) generates a long on the EEX baseload forward; negative edge generates a short. Example: at a 76 €/MWh prompt-week forward, edge = +24 €/MWh (+2.6σ) → full-size long. If edge falls below 0.5σ, no position is taken. Full three-scenario outputs: `outputs/reports/prompt_curve_view.md`.
 
 ### Invalidation Conditions
 
@@ -165,7 +154,7 @@ Any of the following would materially impair the fair-value estimate:
 
 ### Component: Automated Daily Market Commentary
 
-The AI component is an automated market commentary generator (`src/ai/commentary.py`, invoked via `scripts/09_drivers_commentary.py`). It reads five pipeline output files, constructs a structured prompt containing all computed metrics, calls the Anthropic API, and writes a four-section narrative to `outputs/reports/drivers_commentary.md`. The manual equivalent — reading five separate outputs, computing period-over-period driver changes, and writing a structured desk-ready summary — is replaced by a single command.
+The AI component is an automated market commentary generator (`src/ai/commentary.py`, `scripts/09_drivers_commentary.py`). It reads five pipeline output files, builds a structured prompt from computed metrics, calls the Anthropic API, and writes a four-section desk-ready narrative to `outputs/reports/drivers_commentary.md` — replacing the manual task of reading five separate files, computing driver changes, and writing a summary.
 
 ### What the LLM Receives
 
@@ -179,23 +168,14 @@ The prompt is assembled entirely from computed pipeline outputs with no manual i
 | `data/processed/features.parquet` | Climatological proxy driver values (wind/solar/load/residual load/renewable share) for each period, plus 30-day recent actuals |
 | `outputs/tables/feature_importance.csv` | Per-feature importance share (% of total gain) |
 
-Period-over-period driver changes (Prompt Week → Prompt Month, in MW and %) are computed in Python before the prompt is built and injected as formatted numbers — the LLM is never asked to do arithmetic.
+Period-over-period driver changes are computed in Python and injected as formatted numbers — the LLM is never asked to do arithmetic.
 
 ### Hallucination Prevention
 
 The prompt instructs the model explicitly: *"Use ONLY the numbers provided. Do not invent, estimate, or interpolate any figures not listed here."* Every number that appears in the commentary is a value that was injected from a verified pipeline output. The model's role is narrative synthesis, not calculation.
 
-### Output Structure
-
-The LLM produces four sections, each with a plain-language summary followed by technical detail:
-
-1. **Model Quality** — forecast performance vs. baseline
-2. **Fair Value View** — price levels, uncertainty bands, and driver narrative explaining the gap between periods
-3. **Trading Signals** — signal direction, confidence, and desk action for each scenario
-4. **Key Risks** — plain-language risk summary followed by the five invalidation conditions
+The LLM produces four sections: Model Quality, Fair Value View, Trading Signals, and Key Risks — each with a plain-language summary and supporting detail.
 
 ### Logging and Auditability
 
-Every API call is appended to `outputs/logs/llm_calls.jsonl` as a single JSON record containing: `timestamp`, `model`, `status`, `latency_ms`, `input_tokens`, `output_tokens`, `prompt` (full text), and `response` (full text). Failed calls log the exception type and message with `response: null`. The log is append-only — prior calls are never overwritten. The Anthropic API key is loaded from `.env` via `python-dotenv` and is absent from all committed files.
-
-A sample call from the log: `status=success`, `latency_ms=42,515`, `input_tokens=2,391`, `output_tokens=2,048`, `model=claude-sonnet-4-6`.
+Every API call is appended to `outputs/logs/llm_calls.jsonl` with `timestamp`, `model`, `status`, `latency_ms`, `input_tokens`, `output_tokens`, full `prompt`, and full `response`. Failed calls log the exception with `response: null`. The log is append-only. The Anthropic API key is loaded from `.env` via `python-dotenv` — absent from all committed files. Sample call: `status=success`, `latency_ms=42,515`, `input_tokens=2,391`, `output_tokens=2,048`, `model=claude-sonnet-4-6`.

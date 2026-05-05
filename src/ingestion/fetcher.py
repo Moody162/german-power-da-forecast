@@ -10,11 +10,15 @@ Fetches the following 7 ENTSO-E time series for the German bidding zone DE_LU:
   7. Actual load                 (6.1.A)
 """
 
+import time
 import pandas as pd
 from datetime import timedelta
 from entsoe import EntsoePandasClient
 
 from . import constants
+
+_MAX_RETRIES = 3
+_RETRY_BACKOFF = [5, 15, 30]  # seconds between retries
 
 
 def _fetch_chunked(query_fn, start, end, chunk_days, label):
@@ -27,6 +31,9 @@ def _fetch_chunked(query_fn, start, end, chunk_days, label):
     lambda is responsible for any API-specific end adjustment — e.g. passing
     end + 1h to a method whose API treats end as exclusive, so the full
     chunk_end hour (including its :15/:30/:45 intervals) is returned.
+
+    Each chunk is retried up to _MAX_RETRIES times with exponential backoff
+    before being skipped. A RuntimeError is raised if no chunks succeed at all.
     """
     chunks = []
     failures = 0
@@ -34,13 +41,27 @@ def _fetch_chunked(query_fn, start, end, chunk_days, label):
 
     while chunk_start <= end:
         chunk_end = min(chunk_start + timedelta(days=chunk_days), end)
-        try:
-            result = query_fn(chunk_start, chunk_end)
-            print(f"[{label}] {chunk_start} → {chunk_end} (rows={len(result)})")
-            chunks.append(result)
-        except Exception as e:
-            print(f"[{label}] {chunk_start} → {chunk_end} FAILED: {e}")
-            failures += 1
+        success = False
+        for attempt in range(_MAX_RETRIES + 1):
+            try:
+                result = query_fn(chunk_start, chunk_end)
+                print(f"[{label}] {chunk_start} → {chunk_end} (rows={len(result)})")
+                chunks.append(result)
+                success = True
+                break
+            except Exception as e:
+                if attempt < _MAX_RETRIES:
+                    wait = _RETRY_BACKOFF[attempt]
+                    print(f"[{label}] {chunk_start} → {chunk_end} FAILED (attempt {attempt+1}/{_MAX_RETRIES+1}): {e} — retrying in {wait}s")
+                    time.sleep(wait)
+                else:
+                    print(f"[{label}] {chunk_start} → {chunk_end} FAILED after {_MAX_RETRIES+1} attempts: {e}")
+                    failures += 1
+        if not success:
+            raise RuntimeError(
+                f"[{label}] chunk {chunk_start} → {chunk_end} failed after "
+                f"{_MAX_RETRIES + 1} attempts. Fix the gap before continuing."
+            )
         chunk_start = chunk_end + pd.Timedelta(hours=1)
 
     if not chunks:

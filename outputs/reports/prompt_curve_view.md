@@ -1,7 +1,7 @@
 # Prompt Curve Translation View — German DA Power (DE_LU)
 
 **Model data through:** 2026-05-04 23:00 UTC+02:00  
-**Generated:** 2026-05-05 06:02 UTC
+**Generated:** 2026-05-05 10:00 UTC
 
 > **Disclaimer:** Forward prices are illustrative hypothetical reference levels,
 > not real market quotes. Included solely to demonstrate the DA-to-curve

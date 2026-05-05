@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-05-05T06:02:39.602856+00:00",
-  "curve_views_generated_at": "2026-05-05T06:02:01.250847+00:00",
+  "generated_at": "2026-05-05T10:00:18.524293+00:00",
+  "curve_views_generated_at": "2026-05-05T10:00:18.171191+00:00",
   "test_end": "2026-05-04T23:00:00+02:00",
   "disclaimer": "Forward prices marked 'illustrative' are not real market quotes. They are hypothetical reference levels included solely to demonstrate the DA-to-curve translation methodology across long, neutral, and short signal regimes.",
   "confidence_thresholds": {

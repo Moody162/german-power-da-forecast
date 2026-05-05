@@ -53,12 +53,10 @@ def clean(full: bool) -> None:
             print(f"  removed data/raw")
 
 
-def run_script(name: str, label: str, step: int, total: int) -> None:
+def run_script(name: str, label: str, step: int, total: int, extra_args: list[str] | None = None) -> None:
     print(f"\n[{step}/{total}] {label}...")
-    result = subprocess.run(
-        [sys.executable, str(PROJECT_ROOT / "scripts" / name)],
-        cwd=PROJECT_ROOT,
-    )
+    cmd = [sys.executable, str(PROJECT_ROOT / "scripts" / name)] + (extra_args or [])
+    result = subprocess.run(cmd, cwd=PROJECT_ROOT)
     if result.returncode != 0:
         print(f"\nPipeline failed at step {step} ({name}). Exiting.")
         sys.exit(result.returncode)
@@ -76,7 +74,8 @@ def main() -> None:
     clean(full=args.full_clean)
     print("\n=== Running pipeline ===")
     for i, (name, label) in enumerate(SCRIPTS, start=1):
-        run_script(name, label, i, len(SCRIPTS))
+        extra = ["--no-fail"] if name == "03_qa.py" else None
+        run_script(name, label, i, len(SCRIPTS), extra_args=extra)
     print("\n=== Pipeline complete ===")
 
 

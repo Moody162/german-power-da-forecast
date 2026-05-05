@@ -83,10 +83,10 @@
     "category": "missingness",
     "severity": "info",
     "passed": true,
-    "message": "wind_actual_mw: 0 NaN (0.0%) in train+test",
+    "message": "wind_actual_mw: 6483 NaN (13.853%) in train+test",
     "details": {
-      "null_count": 0,
-      "null_pct": 0.0
+      "null_count": 6483,
+      "null_pct": 13.853
     }
   },
   {
@@ -94,10 +94,10 @@
     "category": "missingness",
     "severity": "info",
     "passed": true,
-    "message": "solar_actual_mw: 9 NaN (0.019%) in train+test",
+    "message": "solar_actual_mw: 6483 NaN (13.853%) in train+test",
     "details": {
-      "null_count": 9,
-      "null_pct": 0.019
+      "null_count": 6483,
+      "null_pct": 13.853
     }
   },
   {
@@ -162,25 +162,25 @@
   {
     "name": "max_gap_wind_actual_mw",
     "category": "missingness",
-    "severity": "info",
-    "passed": true,
-    "message": "wind_actual_mw: largest gap = 0h",
+    "severity": "warning",
+    "passed": false,
+    "message": "wind_actual_mw: largest gap = 6483h (exceeds 24h threshold)",
     "details": {
-      "gap_hours": 0,
-      "gap_start": null,
-      "gap_end": null
+      "gap_hours": 6483,
+      "gap_start": "2021-06-30 01:00:00+00:00",
+      "gap_end": "2022-03-27 03:00:00+00:00"
     }
   },
   {
     "name": "max_gap_solar_actual_mw",
     "category": "missingness",
-    "severity": "info",
-    "passed": true,
-    "message": "solar_actual_mw: largest gap = 9h",
+    "severity": "warning",
+    "passed": false,
+    "message": "solar_actual_mw: largest gap = 6483h (exceeds 24h threshold)",
     "details": {
-      "gap_hours": 9,
-      "gap_start": "2026-05-03 22:00:00+00:00",
-      "gap_end": "2026-05-04 06:00:00+00:00"
+      "gap_hours": 6483,
+      "gap_start": "2021-06-30 01:00:00+00:00",
+      "gap_end": "2022-03-27 03:00:00+00:00"
     }
   },
   {
@@ -476,16 +476,16 @@
         "2021-03": 0,
         "2021-04": 0,
         "2021-05": 0,
-        "2021-06": 0,
-        "2021-07": 0,
-        "2021-08": 0,
-        "2021-09": 0,
-        "2021-10": 0,
-        "2021-11": 0,
-        "2021-12": 0,
-        "2022-01": 0,
-        "2022-02": 0,
-        "2022-03": 0,
+        "2021-06": 21,
+        "2021-07": 744,
+        "2021-08": 744,
+        "2021-09": 720,
+        "2021-10": 745,
+        "2021-11": 720,
+        "2021-12": 744,
+        "2022-01": 744,
+        "2022-02": 672,
+        "2022-03": 629,
         "2022-04": 0,
         "2022-05": 0,
         "2022-06": 0,
@@ -543,16 +543,16 @@
         "2021-03": 0,
         "2021-04": 0,
         "2021-05": 0,
-        "2021-06": 0,
-        "2021-07": 0,
-        "2021-08": 0,
-        "2021-09": 0,
-        "2021-10": 0,
-        "2021-11": 0,
-        "2021-12": 0,
-        "2022-01": 0,
-        "2022-02": 0,
-        "2022-03": 0,
+        "2021-06": 21,
+        "2021-07": 744,
+        "2021-08": 744,
+        "2021-09": 720,
+        "2021-10": 745,
+        "2021-11": 720,
+        "2021-12": 744,
+        "2022-01": 744,
+        "2022-02": 672,
+        "2022-03": 629,
         "2022-04": 0,
         "2022-05": 0,
         "2022-06": 0,
@@ -602,7 +602,7 @@
         "2026-02": 0,
         "2026-03": 0,
         "2026-04": 0,
-        "2026-05": 9
+        "2026-05": 0
       },
       "load_actual_mw": {
         "2021-01": 0,
@@ -798,7 +798,7 @@
     "passed": true,
     "message": "solar_actual_mw \u2208 [0, 80000]",
     "details": {
-      "min": 0.00575,
+      "min": 0.009,
       "max": 54169.05,
       "n_below_range": 0,
       "n_above_range": 0
@@ -845,20 +845,20 @@
     "message": "Mean forecast bias (actual \u2212 forecast, MW) per series per year",
     "details": {
       "wind": {
-        "2021": 64.4,
-        "2022": 209.9,
+        "2021": -39.8,
+        "2022": 124.2,
         "2023": 93.0,
         "2024": -20.9,
         "2025": 193.2,
-        "2026": -252.9
+        "2026": -223.3
       },
       "solar": {
-        "2021": -31.1,
-        "2022": 25.2,
+        "2021": 36.0,
+        "2022": 48.4,
         "2023": -16.7,
         "2024": -122.5,
         "2025": 13.7,
-        "2026": 31.7
+        "2026": 31.2
       },
       "load": {
         "2021": 1890.9,
