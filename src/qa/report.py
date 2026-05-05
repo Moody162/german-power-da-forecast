@@ -33,7 +33,7 @@ def _results_to_dict(results: list[QAResult]) -> list[dict]:
 
 def write_json(results: list[QAResult], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "w") as fh:
+    with open(path, "w", encoding="utf-8") as fh:
         json.dump(_results_to_dict(results), fh, indent=2, default=str)
 
 
@@ -70,7 +70,7 @@ def write_markdown(results: list[QAResult], path: Path, dataset_shape: tuple) ->
             lines.append(f"### `{r.name}`\n")
             lines.append(f"```json\n{json.dumps(r.details, indent=2, default=str)}\n```\n")
 
-    path.write_text("\n".join(lines) + "\n")
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def summarise(results: list[QAResult]) -> None:
