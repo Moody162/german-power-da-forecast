@@ -2,7 +2,7 @@
 
 **Dataset shape**: 46,799 rows × 9 columns
 
-**Checks run**: 35  |  **Critical failures**: 0  |  **Warnings**: 2
+**Checks run**: 35  |  **Critical failures**: 0  |  **Warnings**: 0
 
 
 ## Structural
@@ -22,15 +22,15 @@
 | `no_nulls_wind_forecast_mw` | 🔴 critical | ✓ | wind_forecast_mw: 0 NaN in train+test |
 | `no_nulls_solar_forecast_mw` | 🔴 critical | ✓ | solar_forecast_mw: 0 NaN in train+test |
 | `no_nulls_load_forecast_mw` | 🔴 critical | ✓ | load_forecast_mw: 0 NaN in train+test |
-| `nulls_wind_actual_mw` | 🟢 info | ✓ | wind_actual_mw: 6483 NaN (13.853%) in train+test |
-| `nulls_solar_actual_mw` | 🟢 info | ✓ | solar_actual_mw: 6483 NaN (13.853%) in train+test |
+| `nulls_wind_actual_mw` | 🟢 info | ✓ | wind_actual_mw: 0 NaN (0.0%) in train+test |
+| `nulls_solar_actual_mw` | 🟢 info | ✓ | solar_actual_mw: 0 NaN (0.0%) in train+test |
 | `nulls_load_actual_mw` | 🟢 info | ✓ | load_actual_mw: 8 NaN (0.017%) in train+test |
 | `max_gap_da_price_eur_mwh` | 🟢 info | ✓ | da_price_eur_mwh: largest gap = 0h |
 | `max_gap_wind_forecast_mw` | 🟢 info | ✓ | wind_forecast_mw: largest gap = 0h |
 | `max_gap_solar_forecast_mw` | 🟢 info | ✓ | solar_forecast_mw: largest gap = 0h |
 | `max_gap_load_forecast_mw` | 🟢 info | ✓ | load_forecast_mw: largest gap = 0h |
-| `max_gap_wind_actual_mw` | 🟡 warning | ✗ | wind_actual_mw: largest gap = 6483h (exceeds 24h threshold) |
-| `max_gap_solar_actual_mw` | 🟡 warning | ✗ | solar_actual_mw: largest gap = 6483h (exceeds 24h threshold) |
+| `max_gap_wind_actual_mw` | 🟢 info | ✓ | wind_actual_mw: largest gap = 0h |
+| `max_gap_solar_actual_mw` | 🟢 info | ✓ | solar_actual_mw: largest gap = 0h |
 | `max_gap_load_actual_mw` | 🟢 info | ✓ | load_actual_mw: largest gap = 8h |
 | `monthly_missingness` | 🟢 info | ✓ | Per-month NaN counts per column |
 
@@ -64,26 +64,3 @@
 | `forecast_bias_by_year` | 🟢 info | ✓ | Mean forecast bias (actual − forecast, MW) per series per year |
 | `negative_price_hours` | 🟢 info | ✓ | 1,730 negative DA price hours across full dataset |
 | `renewable_surplus_hours` | 🟢 info | ✓ | 547 hours where wind+solar forecast exceeds load forecast |
-
-## Failure Details
-
-### `max_gap_wind_actual_mw`
-
-```json
-{
-  "gap_hours": 6483,
-  "gap_start": "2021-06-30 01:00:00+00:00",
-  "gap_end": "2022-03-27 03:00:00+00:00"
-}
-```
-
-### `max_gap_solar_actual_mw`
-
-```json
-{
-  "gap_hours": 6483,
-  "gap_start": "2021-06-30 01:00:00+00:00",
-  "gap_end": "2022-03-27 03:00:00+00:00"
-}
-```
-
