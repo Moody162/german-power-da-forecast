@@ -108,3 +108,47 @@ A `LGBMRegressor` was trained with the following key parameters: `n_estimators=1
 The OOF aggregate stacks all 30 folds' predictions and evaluates them as one, which is more conservative than the mean of per-fold MAEs. LightGBM reduces MAE by 54% over the baseline on both the CV period and the held-out test set, confirming the improvement generalises. The tail MAE — computed on the top and bottom 5% of actual prices (spikes and negative hours) — follows the same pattern: LightGBM's 28 €/MWh tail error vs. the baseline's 58–73 €/MWh shows meaningful improvement on the extreme hours that matter most for trading.
 
 **Feature importance and model limitations:** `price_lag_24h` accounts for 55.3% of total LightGBM gain, with `price_rolling_mean_7d` at 15.7% and `residual_load_mw` at 13.1%. The model is heavily lag-dominated, which explains its strong same-day performance but creates compounding uncertainty in the recursive multi-step forecast beyond 24 hours: each predicted price is appended to the buffer and used as a lag feature for the next step, so errors accumulate over the forecast horizon. The weekly and monthly delivery-period averages derived from this forecast carry wider uncertainty than the first-day predictions, which is reflected in the sigma bands described in Part 3. Full per-fold results are in `outputs/reports/model_performance.md`.
+
+---
+
+## Part 3 — Prompt Curve Translation
+
+### Recursive Forecast and Period Aggregation
+
+The final model is applied recursively from `TEST_END + 1h` through the end of the prompt month. ENTSO-E DA wind, solar, and load forecasts are only published at the 24-hour horizon; beyond that, the pipeline uses **climatological proxies** — training-set means grouped by `(month, hour-of-day)` — as driver inputs. A price buffer seeded with the last 200 actual prices grows as each predicted value is appended, feeding the lag and rolling features at each step.
+
+Hourly predictions are aggregated by simple mean within each delivery window: the **Prompt Week** (next full ISO Mon–Sun week after test end) and the **Prompt Month** (next full calendar month). The fair-value estimate is the expected baseload average for that delivery period under the model's fundamental assumptions.
+
+### Uncertainty Model
+
+Sigma for each period is derived from the OOF residuals produced during cross-validation. Residuals are resampled to the delivery-period frequency (weekly or monthly) and the standard deviation of those period-mean residuals is taken as sigma. This captures the typical error of a **period-average** forecast — the relevant quantity for delivery-period trading. Confidence intervals use ±1.28σ (80%) and ±1.96σ (95%).
+
+Current fair-value estimates (model data through 2026-05-04):
+
+| Period | Dates | Fair Value (€/MWh) | σ (€/MWh) | 80% CI | 95% CI |
+|---|---|---|---|---|---|
+| Prompt Week | 2026-05-11 → 2026-05-17 | 100.02 | 9.13 | [88.33, 111.70] | [82.12, 117.91] |
+| Prompt Month | 2026-06-01 → 2026-06-30 | 64.10 | 6.26 | [56.09, 72.12] | [51.83, 76.38] |
+
+### Desk Translation
+
+The edge (fair value minus forward price) is expressed in sigma-multiples to normalise for period-specific uncertainty. Confidence tiers determine position sizing:
+
+| Confidence | Threshold | Sizing |
+|---|---|---|
+| High | ≥ 1.96σ | Full size |
+| Moderate | 1.28σ – 1.96σ | Half size |
+| Low | 0.50σ – 1.28σ | Quarter size — indicative only |
+| Noise | < 0.50σ | Flat |
+
+A positive edge (fair value above forward) generates a long signal on the EEX baseload forward for that delivery period; a negative edge generates a short. For example, under a bearish market scenario where the prompt week forward is at 76 €/MWh, the edge of +24 €/MWh (+2.6σ) exceeds the high-confidence threshold and the desk buys the prompt-week forward at full size. If the forward is near fair value, edge falls within noise and no position is taken. Full scenario outputs — including rationale and sizing notes for three market scenarios — are in `outputs/reports/prompt_curve_view.md`.
+
+### Invalidation Conditions
+
+Any of the following would materially impair the fair-value estimate:
+
+- **Weather surprise:** load or renewable output outside the climatological range used as proxies for the multi-week horizon.
+- **Nuclear outage:** a surprise outage in Germany or France shifts the supply stack in ways the model's features do not capture.
+- **Gas repricing:** a TTF spike lifts the marginal cost of gas-fired generation above model assumptions.
+- **Regime shift:** sigma bands are calibrated on 2023–2025 OOF residuals; a structural market change would cause uncertainty to be underestimated.
+- **Demand response:** large-scale industrial curtailment not reflected in the ENTSO-E load forecast suppresses realised demand below model inputs.
