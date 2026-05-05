@@ -17,7 +17,7 @@ Outputs:
     outputs/predictions/submission.csv
     outputs/tables/cv_metrics.csv
     outputs/tables/feature_importance.csv
-    outputs/tables/model_performance.md
+    outputs/reports/model_performance.md
     outputs/figures/oof_actual_vs_predicted.png
     outputs/figures/feature_importance.png
 """
@@ -46,6 +46,7 @@ from src.models.lgbm_model import (
 PROJECT_ROOT  = Path(__file__).resolve().parents[1]
 FEATURES_PATH = PROJECT_ROOT / "data" / "processed" / "features.parquet"
 TABLES_DIR    = PROJECT_ROOT / "outputs" / "tables"
+REPORTS_DIR   = PROJECT_ROOT / "outputs" / "reports"
 FIGURES_DIR   = PROJECT_ROOT / "outputs" / "figures"
 PREDS_DIR     = PROJECT_ROOT / "outputs" / "predictions"
 MODELS_DIR    = PROJECT_ROOT / "outputs" / "models"
@@ -99,7 +100,7 @@ def save_feature_importance_figure(importance_df: pd.DataFrame, path: Path) -> N
 
 
 def main() -> None:
-    for d in [TABLES_DIR, FIGURES_DIR, PREDS_DIR, MODELS_DIR]:
+    for d in [TABLES_DIR, REPORTS_DIR, FIGURES_DIR, PREDS_DIR, MODELS_DIR]:
         d.mkdir(parents=True, exist_ok=True)
 
     print(f"Loading {FEATURES_PATH} ...")
@@ -280,7 +281,7 @@ def main() -> None:
         f"| **{baseline_cv['mae']:.2f}** | **{baseline_cv['rmse']:.2f}** | **{baseline_cv['tail_mae']:.2f}** |",
     ]
 
-    md_path = TABLES_DIR / "model_performance.md"
+    md_path = REPORTS_DIR / "model_performance.md"
     md_path.write_text("\n".join(lines), encoding="utf-8")
     print(f"Model performance report → {md_path}")
 

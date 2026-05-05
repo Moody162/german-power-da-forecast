@@ -11,7 +11,7 @@ Inputs:
 
 Outputs:
     outputs/tables/prompt_curve_view.json
-    outputs/tables/prompt_curve_view.md
+    outputs/reports/prompt_curve_view.md
 """
 
 import json
@@ -22,7 +22,7 @@ import pandas as pd
 PROJECT_ROOT      = Path(__file__).resolve().parents[1]
 CURVE_VIEWS_PATH  = PROJECT_ROOT / "outputs" / "tables" / "curve_views.json"
 OUTPUT_JSON_PATH  = PROJECT_ROOT / "outputs" / "tables" / "prompt_curve_view.json"
-OUTPUT_MD_PATH    = PROJECT_ROOT / "outputs" / "tables" / "prompt_curve_view.md"
+OUTPUT_MD_PATH    = PROJECT_ROOT / "outputs" / "reports" / "prompt_curve_view.md"
 
 # ── Illustrative forward prices (€/MWh) ──────────────────────────────────────
 # Hypothetical reference levels — not real market quotes.
@@ -332,6 +332,7 @@ def main() -> None:
     }
 
     OUTPUT_JSON_PATH.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_MD_PATH.parent.mkdir(parents=True, exist_ok=True)
 
     with open(OUTPUT_JSON_PATH, "w") as f:
         json.dump(output, f, indent=2)

@@ -14,7 +14,7 @@ Inputs:
     outputs/tables/feature_importance.csv
 
 Outputs:
-    outputs/tables/drivers_commentary.md
+    outputs/reports/drivers_commentary.md
     outputs/logs/llm_calls.jsonl
 """
 
@@ -37,7 +37,7 @@ PCV_PATH      = PROJECT_ROOT / "outputs" / "tables" / "prompt_curve_view.json"
 FEATURES_PATH = PROJECT_ROOT / "data" / "processed" / "features.parquet"
 FI_PATH       = PROJECT_ROOT / "outputs" / "tables" / "feature_importance.csv"
 LOG_PATH      = PROJECT_ROOT / "outputs" / "logs" / "llm_calls.jsonl"
-OUTPUT_PATH   = PROJECT_ROOT / "outputs" / "tables" / "drivers_commentary.md"
+OUTPUT_PATH   = PROJECT_ROOT / "outputs" / "reports" / "drivers_commentary.md"
 
 
 def main() -> None:
