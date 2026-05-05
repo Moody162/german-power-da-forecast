@@ -152,3 +152,44 @@ Any of the following would materially impair the fair-value estimate:
 - **Gas repricing:** a TTF spike lifts the marginal cost of gas-fired generation above model assumptions.
 - **Regime shift:** sigma bands are calibrated on 2023–2025 OOF residuals; a structural market change would cause uncertainty to be underestimated.
 - **Demand response:** large-scale industrial curtailment not reflected in the ENTSO-E load forecast suppresses realised demand below model inputs.
+
+---
+
+## Part 4 — AI-Accelerated Workflow
+
+### Component: Automated Daily Market Commentary
+
+The AI component is an automated market commentary generator (`src/ai/commentary.py`, invoked via `scripts/09_drivers_commentary.py`). It reads five pipeline output files, constructs a structured prompt containing all computed metrics, calls the Anthropic API, and writes a four-section narrative to `outputs/reports/drivers_commentary.md`. The manual equivalent — reading five separate outputs, computing period-over-period driver changes, and writing a structured desk-ready summary — is replaced by a single command.
+
+### What the LLM Receives
+
+The prompt is assembled entirely from computed pipeline outputs with no manual input:
+
+| Input file | What is injected |
+|---|---|
+| `outputs/tables/cv_metrics.csv` | Mean MAE, RMSE, tail MAE for LightGBM and baseline; improvement % |
+| `outputs/tables/curve_views.json` | Fair value, sigma, 80%/95% CIs for each delivery period |
+| `outputs/tables/prompt_curve_view.json` | Edge, σ-multiple, signal direction, confidence, and desk action for all three scenarios |
+| `data/processed/features.parquet` | Climatological proxy driver values (wind/solar/load/residual load/renewable share) for each period, plus 30-day recent actuals |
+| `outputs/tables/feature_importance.csv` | Per-feature importance share (% of total gain) |
+
+Period-over-period driver changes (Prompt Week → Prompt Month, in MW and %) are computed in Python before the prompt is built and injected as formatted numbers — the LLM is never asked to do arithmetic.
+
+### Hallucination Prevention
+
+The prompt instructs the model explicitly: *"Use ONLY the numbers provided. Do not invent, estimate, or interpolate any figures not listed here."* Every number that appears in the commentary is a value that was injected from a verified pipeline output. The model's role is narrative synthesis, not calculation.
+
+### Output Structure
+
+The LLM produces four sections, each with a plain-language summary followed by technical detail:
+
+1. **Model Quality** — forecast performance vs. baseline
+2. **Fair Value View** — price levels, uncertainty bands, and driver narrative explaining the gap between periods
+3. **Trading Signals** — signal direction, confidence, and desk action for each scenario
+4. **Key Risks** — plain-language risk summary followed by the five invalidation conditions
+
+### Logging and Auditability
+
+Every API call is appended to `outputs/logs/llm_calls.jsonl` as a single JSON record containing: `timestamp`, `model`, `status`, `latency_ms`, `input_tokens`, `output_tokens`, `prompt` (full text), and `response` (full text). Failed calls log the exception type and message with `response: null`. The log is append-only — prior calls are never overwritten. The Anthropic API key is loaded from `.env` via `python-dotenv` and is absent from all committed files.
+
+A sample call from the log: `status=success`, `latency_ms=42,515`, `input_tokens=2,391`, `output_tokens=2,048`, `model=claude-sonnet-4-6`.

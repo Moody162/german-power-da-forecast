@@ -18,7 +18,7 @@ import pandas as pd
 from src.models.clim_proxies import build_clim_proxies, get_proxy_features
 
 MODEL = "claude-sonnet-4-6"
-MAX_TOKENS = 2048
+MAX_TOKENS = 4096
 
 
 # ── Prompt building ───────────────────────────────────────────────────────────
