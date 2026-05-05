@@ -1,6 +1,6 @@
 # QA Report
 
-**Dataset shape**: 46,343 rows × 9 columns
+**Dataset shape**: 46,775 rows × 9 columns
 
 **Checks run**: 35  |  **Critical failures**: 0  |  **Warnings**: 0
 
@@ -62,5 +62,5 @@
 | Check | Severity | Passed | Message |
 |-------|----------|--------|---------|
 | `forecast_bias_by_year` | 🟢 info | ✓ | Mean forecast bias (actual − forecast, MW) per series per year |
-| `negative_price_hours` | 🟢 info | ✓ | 1,642 negative DA price hours across full dataset |
-| `renewable_surplus_hours` | 🟢 info | ✓ | 514 hours where wind+solar forecast exceeds load forecast |
+| `negative_price_hours` | 🟢 info | ✓ | 1,730 negative DA price hours across full dataset |
+| `renewable_surplus_hours` | 🟢 info | ✓ | 547 hours where wind+solar forecast exceeds load forecast |
