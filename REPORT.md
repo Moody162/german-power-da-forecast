@@ -18,8 +18,8 @@ Five series were collected at hourly resolution:
 | Day-Ahead prices | 12.1.D | Target variable |
 | DA wind and solar forecast | 14.1.D | Primary supply driver |
 | DA load forecast | 6.1.B | Primary demand driver |
-| Actual wind and solar generation | 16.1.B&C | Training features (not used at inference) |
-| Actual total load | 6.1.A | Training features (not used at inference) |
+| Actual wind and solar generation | 16.1.B&C | QA cross-checks only (not a model input) |
+| Actual total load | 6.1.A | QA cross-checks only (not a model input) |
 
 Training window: **2021-01-01 → 2025-06-30**. Test window: **2025-07-01 → yesterday** (dynamic). All series except DA prices are published at 15-minute resolution and resampled to hourly means in the merge layer. DA prices transitioned to 15-minute settlement in October 2025; the same resampling step handles both resolutions. Requests are issued in 90-day chunks to stay within the API's response size ceiling. The fetcher retries each chunk up to 3 times with exponential backoff; a chunk that fails all attempts raises an error rather than silently saving a gap. Despite this, the exact dataset fetched on any given run may differ marginally due to transient ENTSO-E API errors (e.g. 503s) that are outside pipeline control.
 
