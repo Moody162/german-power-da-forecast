@@ -35,22 +35,22 @@ cp .env.example .env
 
 ### Run the pipeline
 
-The easiest way is the provided shell script, which cleans all generated outputs and runs all 9 steps in order:
+Use the provided Python script, which works on all platforms (macOS, Linux, Windows). It cleans all generated outputs and runs all 9 steps in order:
 
 ```bash
-bash run_pipeline.sh
+uv run run_pipeline.py
 ```
 
-Ingestion hits the ENTSO-E API and takes several minutes. If raw data already exists and you only want to re-run the downstream steps:
+Ingestion hits the ENTSO-E API and takes approximately 15 minutes. If raw data already exists and you only want to re-run the downstream steps:
 
 ```bash
-bash run_pipeline.sh --skip-ingest
+uv run run_pipeline.py --skip-ingest
 ```
 
-To run steps individually (each depends on the outputs of the previous one):
+To run steps individually instead:
 
 ```bash
-uv run scripts/01_ingest.py        # fetch raw data from ENTSO-E
+uv run scripts/01_ingest.py        # fetch raw data from ENTSO-E (~15 min)
 uv run scripts/02_merge.py         # align and merge all series
 uv run scripts/03_qa.py            # run QA checks on raw data
 uv run scripts/04_clean.py         # impute and clean
@@ -73,6 +73,7 @@ src/
 ├── models/         baseline, LightGBM, recursive forecast, curve aggregation
 └── ai/             LLM commentary (prompt builder, API call, logging)
 scripts/            pipeline entry points (01–09, run in order)
+run_pipeline.py     runs the full pipeline (cross-platform)
 docs/               ENTSO-E API endpoint documentation
 data/               raw + processed data (gitignored)
 outputs/
