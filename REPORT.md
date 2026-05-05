@@ -98,7 +98,11 @@ A `LGBMRegressor` with L2 regression objective, MAE early-stopping metric (patie
 
 The OOF aggregate stacks all 30 folds as one, more conservative than averaging per-fold MAEs. LightGBM reduces MAE by 54% on both the CV period and the held-out test set, confirming the improvement generalises. The tail MAE (top and bottom 5% of actuals — spikes and negative hours) follows the same pattern: 28 €/MWh vs. 58–73 €/MWh for the baseline, which matters most for trading.
 
-Figures: `outputs/figures/oof_actual_vs_predicted.png` (OOF time series + scatter), `outputs/figures/feature_importance.png` (feature importance bar chart), `outputs/figures/test_actual_vs_predicted.png` (test set time series + scatter).
+![OOF Actual vs Predicted](outputs/figures/oof_actual_vs_predicted.png)
+
+![Feature Importance](outputs/figures/feature_importance.png)
+
+![Test Set Actual vs Predicted](outputs/figures/test_actual_vs_predicted.png)
 
 **Submission:** `outputs/predictions/submission.csv` — columns `id` (UTC), `timestamp_berlin`, `y_pred` (€/MWh), covering 2025-07-01 → 2026-05-04.
 
@@ -123,7 +127,7 @@ Current fair-value estimates (model data through 2026-05-04):
 | Prompt Week | 2026-05-11 → 2026-05-17 | 100.02 | 9.13 | [88.33, 111.70] | [82.12, 117.91] |
 | Prompt Month | 2026-06-01 → 2026-06-30 | 64.10 | 6.26 | [56.09, 72.12] | [51.83, 76.38] |
 
-Figure: `outputs/figures/recursive_forecast.png` (recursive forecast with prompt week and prompt month shading).
+![Recursive Forecast](outputs/figures/recursive_forecast.png)
 
 ### Desk Translation
 
