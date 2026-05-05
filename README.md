@@ -18,19 +18,91 @@ End-to-end forecasting pipeline for the German Day-Ahead electricity market. Ing
 
 ## Setup
 
-### Prerequisites
-- Python 3.13+
-- [`uv`](https://docs.astral.sh/uv/) package manager
-- ENTSO-E API token — register at `transparency.entsoe.eu`, then email `transparency@entsoe.eu` with subject `RESTful API access`. Approval takes 1–3 working days.
-- Anthropic API key — `console.anthropic.com`
+### 1. Install Python 3.13+
 
-### Install
+Check if you already have it:
+```bash
+python --version
+```
+If the output shows `Python 3.13.x` or higher, skip to the next step.
+
+**macOS**
+```bash
+brew install python@3.13
+```
+If `brew` is not found, install Homebrew first:
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+Then re-run the `brew install python@3.13` command.
+
+**Linux (Ubuntu / Debian)**
+```bash
+sudo apt update && sudo apt install -y python3.13 python3.13-venv
+```
+If Python 3.13 is not available in your package manager, install it via the deadsnakes PPA:
+```bash
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt update && sudo apt install -y python3.13 python3.13-venv
+```
+
+**Windows**
+Download and run the installer from [python.org/downloads](https://www.python.org/downloads/). During installation, check **"Add Python to PATH"** before clicking Install. After installation, open a new terminal and verify:
+```
+python --version
+```
+
+---
+
+### 2. Install uv
+
+`uv` is the package manager used by this project. It manages dependencies and runs scripts.
+
+**macOS / Linux**
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+Then restart your terminal (or run `source ~/.bashrc` / `source ~/.zshrc`) so the `uv` command is available.
+
+**Windows** (run in PowerShell)
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+Restart PowerShell after installation. Verify with:
+```
+uv --version
+```
+
+---
+
+### 3. API Keys
+
+Two API keys are required before the pipeline can run:
+
+**ENTSO-E API token**
+1. Register at [transparency.entsoe.eu](https://transparency.entsoe.eu) (free account)
+2. Email `transparency@entsoe.eu` with subject `RESTful API access` and request API access. Approval typically takes 1–3 working days.
+3. Once approved, your API key is visible in your account settings on the portal.
+
+**Anthropic API key**
+1. Sign up or log in at [console.anthropic.com](https://console.anthropic.com)
+2. Navigate to **API Keys** and create a new key.
+
+---
+
+### 4. Clone and install
+
 ```bash
 git clone git@github.com:Moody162/german-power-da-forecast.git
 cd german-power-da-forecast
 uv sync
 cp .env.example .env
-# Edit .env and fill in ENTSOE_API_KEY and ANTHROPIC_API_KEY
+```
+
+Open `.env` in any text editor and fill in your two API keys:
+```
+ENTSOE_API_KEY=your_entsoe_key_here
+ANTHROPIC_API_KEY=your_anthropic_key_here
 ```
 
 ### Run the pipeline
