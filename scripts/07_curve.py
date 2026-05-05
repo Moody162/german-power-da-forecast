@@ -1,11 +1,12 @@
 """
-Curve translation: loads the trained final model and OOF predictions,
-runs the recursive multi-step forecast through FORECAST_END, aggregates
-to prompt-week and prompt-month delivery averages with uncertainty bands,
-and saves outputs.
+Runs the recursive multi-step forecast from the test-set end through the
+prompt-month horizon, aggregates hourly predictions to prompt-week and
+prompt-month delivery averages, and computes uncertainty bands from OOF errors.
 
-Usage:
-    python scripts/07_curve.py
+Calls:
+    src/ingestion/constants.py      (PROMPT_WEEK_START/END, PROMPT_MONTH_START/END)
+    src/models/recursive_forecast.py  (recursive_forecast)
+    src/models/curve.py             (build_period_forecasts)
 
 Inputs:
     data/processed/features.parquet

@@ -1,11 +1,18 @@
 """
-QA orchestrator: loads a parquet, runs all checks, writes reports,
-and exits non-zero if any critical check fails.
+Runs all data quality checks on a merged parquet and writes JSON and Markdown
+reports. Exits non-zero if any critical check fails. Called directly on
+merged.parquet and again by 04_clean.py on merged_clean.parquet.
 
-Usage:
-    python scripts/03_qa.py                                         # QA on merged.parquet → qa_report
-    python scripts/03_qa.py --input data/processed/merged_clean.parquet --label qa_report_clean
-    python scripts/03_qa.py --no-fail                               # report only, never exit non-zero
+Calls:
+    src/qa/checks.py  (run_all_checks)
+    src/qa/report.py  (summarise, write_json, write_markdown)
+
+Inputs:
+    data/processed/merged.parquet  (default; overridable via --input)
+
+Outputs:
+    data/qa/qa_report.json  (default stem; overridable via --label)
+    data/qa/qa_report.md
 """
 
 import argparse

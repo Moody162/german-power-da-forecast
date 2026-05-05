@@ -1,14 +1,10 @@
 """
-Prompt curve translation: converts the model's period forecasts into
-tradable views under three market scenarios (bearish, neutral, bullish).
+Converts the model's period fair-value forecasts into tradable desk views
+under three market scenarios (bearish, neutral, bullish) by computing edge,
+confidence, and recommended position for each scenario × delivery period.
 
-Loads outputs/tables/curve_views.json, applies illustrative forward prices,
-computes edge / confidence / direction for each scenario × period, and
-saves a structured audit trail to outputs/tables/prompt_curve_view.json
-and a human-readable summary to outputs/tables/prompt_curve_view.md.
-
-Usage:
-    uv run python scripts/08_curve_view.py
+Calls:
+    (no src/ modules — all logic is self-contained)
 
 Inputs:
     outputs/tables/curve_views.json

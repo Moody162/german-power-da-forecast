@@ -1,19 +1,20 @@
 """
-Merge layer: loads raw parquets, resamples 15-min → hourly via mean, extracts
-and renames columns to the final schema, joins on a UTC index, and adds dataset
-labels. Output: data/processed/merged.parquet
+Loads all raw parquets, resamples 15-min series to hourly via mean, renames
+columns to the final schema, joins everything on a UTC index, and labels each
+row as train or test.
 
-Column schema:
-  Index : timestamp_utc (UTC, canonical join key)
-  timestamp_local      : Europe/Berlin tz-aware (for hour-of-day features)
-  da_price_eur_mwh     : target variable
-  wind_forecast_mw     : DA wind forecast (onshore + offshore)
-  solar_forecast_mw    : DA solar forecast
-  load_forecast_mw     : DA load forecast
-  wind_actual_mw       : actual wind generation (QA only — not a feature)
-  solar_actual_mw      : actual solar generation (QA only — not a feature)
-  load_actual_mw       : actual load (QA only — not a feature)
-  dataset              : 'train' | 'test'
+Calls:
+    src/ingestion/constants.py  (TRAIN_START, TRAIN_END, TEST_START, TEST_END)
+
+Inputs:
+    data/raw/da_prices.parquet
+    data/raw/da_wind_solar_forecast.parquet
+    data/raw/da_load_forecast.parquet
+    data/raw/actual_generation.parquet
+    data/raw/actual_load.parquet
+
+Outputs:
+    data/processed/merged.parquet
 """
 
 import sys

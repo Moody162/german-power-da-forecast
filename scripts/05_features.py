@@ -1,12 +1,15 @@
 """
-Feature engineering stage: loads merged_clean.parquet, builds all features,
-writes features.parquet.
+Builds all model features from the cleaned merged dataset and writes the
+feature matrix used by every downstream training and inference script.
 
-Usage:
-    python scripts/05_features.py
+Calls:
+    src/features/engineer.py  (build_features)
 
-Input:  data/processed/merged_clean.parquet
-Output: data/processed/features.parquet
+Inputs:
+    data/processed/merged_clean.parquet
+
+Outputs:
+    data/processed/features.parquet
 """
 
 import sys

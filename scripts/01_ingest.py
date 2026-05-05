@@ -1,7 +1,21 @@
 """
-Pipeline entry point for ENTSO-E ingestion.
-Calls fetcher.py for each of the 7 series and saves raw parquets to data/raw/.
-Run from the project root: python scripts/01_ingest.py
+Fetches all raw time series from the ENTSO-E Transparency Platform for the
+German bidding zone DE_LU and saves each as a parquet file.
+
+Calls:
+    src/ingestion/fetcher.py  (fetch_da_prices, fetch_da_wind_solar_forecast,
+                               fetch_da_load_forecast, fetch_actual_generation,
+                               fetch_actual_load)
+
+Inputs:
+    ENTSO-E Transparency Platform API (live, requires ENTSOE_API_KEY in .env)
+
+Outputs:
+    data/raw/da_prices.parquet
+    data/raw/da_wind_solar_forecast.parquet
+    data/raw/da_load_forecast.parquet
+    data/raw/actual_generation.parquet
+    data/raw/actual_load.parquet
 """
 
 import os

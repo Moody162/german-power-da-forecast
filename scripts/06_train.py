@@ -1,16 +1,20 @@
 """
-Training orchestrator: runs baseline + LightGBM walk-forward CV, trains the
-final model on the full train set, produces out-of-fold metrics, test-set
-predictions, figures, and submission.csv.
+Runs baseline and LightGBM walk-forward CV, trains the final model on the full
+training set, and produces out-of-fold predictions, test-set forecasts,
+performance metrics, feature importance, and diagnostic figures.
 
-Usage:
-    python scripts/06_train.py
+Calls:
+    src/features/engineer.py   (FEATURE_COLS, TARGET_COL)
+    src/models/baseline.py     (predict_baseline, evaluate)
+    src/models/lgbm_model.py   (walk_forward_cv, train_final_model, predict)
 
-Inputs:  data/processed/features.parquet
+Inputs:
+    data/processed/features.parquet
+
 Outputs:
     outputs/models/final_model.pkl
-    outputs/predictions/submission.csv
     outputs/predictions/oof_predictions.parquet
+    outputs/predictions/submission.csv
     outputs/tables/cv_metrics.csv
     outputs/tables/feature_importance.csv
     outputs/figures/oof_actual_vs_predicted.png

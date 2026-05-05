@@ -1,9 +1,11 @@
 """
-Cleaning layer: reads merged.parquet, imputes small forecast gaps, writes
-merged_clean.parquet and an imputation log.
+Imputes small gaps in the three forecast columns (forward-fill, 72-hour limit),
+writes the cleaned dataset, logs every imputed cell, then re-runs QA on the
+cleaned data as a subprocess.
 
-Usage:
-    python scripts/04_clean.py
+Calls:
+    src/qa/impute.py      (impute_forecast_gaps)
+    scripts/03_qa.py      (subprocess, on merged_clean.parquet)
 
 Inputs:
     data/processed/merged.parquet
@@ -11,6 +13,8 @@ Inputs:
 Outputs:
     data/processed/merged_clean.parquet
     data/qa/impute_log.json
+    data/qa/qa_report_clean.json
+    data/qa/qa_report_clean.md
 """
 
 import json

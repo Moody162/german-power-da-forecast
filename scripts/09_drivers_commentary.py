@@ -1,18 +1,17 @@
 """
-Automated drivers commentary: passes computed pipeline metrics to an LLM
-and saves the resulting narrative to outputs/tables/drivers_commentary.md.
+Builds a structured prompt from computed pipeline metrics and calls the
+Anthropic API to generate a daily market commentary. Every API call is
+logged with prompt, response, status, latency, and token counts.
 
-Every API call is logged (prompt, response, status, latency, token counts)
-to outputs/logs/llm_calls.jsonl. The LLM receives only numbers that exist
-in the input files — it never invents figures.
-
-Usage:
-    uv run python scripts/09_drivers_commentary.py
+Calls:
+    src/ai/commentary.py  (run)
 
 Inputs:
+    data/processed/features.parquet
     outputs/tables/cv_metrics.csv
     outputs/tables/curve_views.json
     outputs/tables/prompt_curve_view.json
+    outputs/tables/feature_importance.csv
 
 Outputs:
     outputs/tables/drivers_commentary.md
