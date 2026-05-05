@@ -20,6 +20,7 @@ Outputs:
     outputs/reports/model_performance.md
     outputs/figures/oof_actual_vs_predicted.png
     outputs/figures/feature_importance.png
+    outputs/figures/test_actual_vs_predicted.png
 """
 
 import sys
@@ -81,6 +82,43 @@ def save_oof_figure(oof: pd.DataFrame, path: Path) -> None:
     ax2.set_xlabel("Actual DA Price (€/MWh)")
     ax2.set_ylabel("Predicted DA Price (€/MWh)")
     ax2.set_title("Actual vs Predicted — Out-of-Fold")
+    ax2.legend(fontsize=8)
+
+    fig.tight_layout()
+    fig.savefig(path, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+
+
+def save_test_figure(
+    test: pd.DataFrame,
+    test_pred: pd.Series,
+    baseline_pred: pd.Series,
+    path: Path,
+) -> None:
+    fig, axes = plt.subplots(2, 1, figsize=(14, 8))
+
+    local_index = test_pred.index.tz_convert("Europe/Berlin")
+
+    ax = axes[0]
+    ax.plot(local_index, test[TARGET_COL].values, color="#2c7bb6", lw=0.6, label="Actual", alpha=0.9)
+    ax.plot(local_index, test_pred.values,         color="#d7191c", lw=0.6, label="LightGBM", alpha=0.8)
+    ax.plot(local_index, baseline_pred.values,     color="#888888", lw=0.6,
+            label="Baseline (lag-168h)", alpha=0.6, linestyle="--")
+    ax.set_title("Test Set Predictions vs Actuals (2025-07-01 → 2026-05-04)")
+    ax.set_ylabel("DA Price (€/MWh)")
+    ax.legend(fontsize=8)
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
+    ax.xaxis.set_major_locator(mdates.MonthLocator())
+    plt.setp(ax.get_xticklabels(), rotation=30, ha="right", fontsize=7)
+
+    ax2 = axes[1]
+    ax2.scatter(test[TARGET_COL].values, test_pred.values,
+                alpha=0.15, s=2, color="#d7191c", label="LightGBM")
+    lim = [test[TARGET_COL].min(), test[TARGET_COL].max()]
+    ax2.plot(lim, lim, "k--", lw=1, label="Perfect prediction")
+    ax2.set_xlabel("Actual DA Price (€/MWh)")
+    ax2.set_ylabel("Predicted DA Price (€/MWh)")
+    ax2.set_title("Actual vs Predicted — Test Set")
     ax2.legend(fontsize=8)
 
     fig.tight_layout()
@@ -208,6 +246,10 @@ def main() -> None:
 
     save_oof_figure(oof, FIGURES_DIR / "oof_actual_vs_predicted.png")
     save_feature_importance_figure(importance_df, FIGURES_DIR / "feature_importance.png")
+    save_test_figure(
+        test, test_pred, predict_baseline(test),
+        FIGURES_DIR / "test_actual_vs_predicted.png",
+    )
     print(f"Figures → {FIGURES_DIR}")
 
     # ── Summary ───────────────────────────────────────────────────────────────

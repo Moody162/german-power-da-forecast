@@ -107,6 +107,8 @@ A `LGBMRegressor` was trained with the following key parameters: `n_estimators=1
 
 The OOF aggregate stacks all 30 folds' predictions and evaluates them as one, which is more conservative than the mean of per-fold MAEs. LightGBM reduces MAE by 54% over the baseline on both the CV period and the held-out test set, confirming the improvement generalises. The tail MAE — computed on the top and bottom 5% of actual prices (spikes and negative hours) — follows the same pattern: LightGBM's 28 €/MWh tail error vs. the baseline's 58–73 €/MWh shows meaningful improvement on the extreme hours that matter most for trading.
 
+Figures: `outputs/figures/oof_actual_vs_predicted.png` (OOF time series + scatter), `outputs/figures/feature_importance.png` (feature importance bar chart), `outputs/figures/test_actual_vs_predicted.png` (test set time series + scatter).
+
 **Submission:** test set predictions are saved to `outputs/predictions/submission.csv` with columns `id` (UTC timestamp), `timestamp_berlin` (Europe/Berlin local time), and `y_pred` (predicted DA price in €/MWh), covering 2025-07-01 to 2026-05-04.
 
 **Feature importance and model limitations:** `price_lag_24h` accounts for 55.3% of total LightGBM gain, with `price_rolling_mean_7d` at 15.7% and `residual_load_mw` at 13.1%. The model is heavily lag-dominated, which explains its strong same-day performance but creates compounding uncertainty in the recursive multi-step forecast beyond 24 hours: each predicted price is appended to the buffer and used as a lag feature for the next step, so errors accumulate over the forecast horizon. The weekly and monthly delivery-period averages derived from this forecast carry wider uncertainty than the first-day predictions, which is reflected in the sigma bands described in Part 3. Full per-fold results are in `outputs/reports/model_performance.md`.
@@ -131,6 +133,8 @@ Current fair-value estimates (model data through 2026-05-04):
 |---|---|---|---|---|---|
 | Prompt Week | 2026-05-11 → 2026-05-17 | 100.02 | 9.13 | [88.33, 111.70] | [82.12, 117.91] |
 | Prompt Month | 2026-06-01 → 2026-06-30 | 64.10 | 6.26 | [56.09, 72.12] | [51.83, 76.38] |
+
+Figure: `outputs/figures/recursive_forecast.png` (recursive forecast with prompt week and prompt month shading).
 
 ### Desk Translation
 
