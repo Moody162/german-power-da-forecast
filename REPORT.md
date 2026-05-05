@@ -60,7 +60,9 @@ No imputation was applied to the target variable (`da_price_eur_mwh`) or to actu
 
 ### Forecasting Approach
 
-Option A was chosen: forecast next-day hourly DA prices, then aggregate to prompt-week and prompt-month delivery averages. Option B (forecasting delivery-period averages directly) was ruled out because multi-week-ahead wind, solar, and load forecasts are not publicly available — the aggregate inputs would be weak. Under Option A, ENTSO-E publishes DA-horizon forecasts for all three drivers one day ahead, which are clean and directly usable as features. The weekly and monthly views emerge naturally from aggregating the daily predictions rather than being estimated from noisier aggregate inputs.
+Two forecasting approaches were considered. **Option A:** forecast next-day hourly DA prices and aggregate to prompt-week and prompt-month delivery averages. **Option B:** forecast delivery-period averages (e.g. next-week or next-month baseload average) directly from fundamentals, without going through the hourly layer.
+
+Option A was chosen. Option B was ruled out because it would require multi-week-ahead wind, solar, and load forecasts as inputs — which are not publicly available at that horizon, making the aggregate inputs weak. Under Option A, ENTSO-E publishes DA-horizon forecasts for all three drivers one day ahead, which are clean and directly usable as features. The weekly and monthly views emerge naturally from aggregating the daily predictions rather than being estimated from noisier aggregate inputs.
 
 ### Feature Engineering
 
