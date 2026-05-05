@@ -35,7 +35,19 @@ cp .env.example .env
 
 ### Run the pipeline
 
-Each script must be run in order — each step depends on the outputs of the previous one.
+The easiest way is the provided shell script, which cleans all generated outputs and runs all 9 steps in order:
+
+```bash
+bash run_pipeline.sh
+```
+
+Ingestion hits the ENTSO-E API and takes several minutes. If raw data already exists and you only want to re-run the downstream steps:
+
+```bash
+bash run_pipeline.sh --skip-ingest
+```
+
+To run steps individually (each depends on the outputs of the previous one):
 
 ```bash
 uv run scripts/01_ingest.py        # fetch raw data from ENTSO-E
