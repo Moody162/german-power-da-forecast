@@ -13,9 +13,6 @@ TEST_END = (
     .normalize()
     + pd.Timedelta(hours=23)
 )
-STRESS_START = pd.Timestamp("2019-01-01", tz="Europe/Berlin")
-STRESS_END = pd.Timestamp("2020-12-31 23:00", tz="Europe/Berlin")
-
 RAW_DATA_DIR = Path("data/raw")
 CHUNK_DAYS = 90
 

@@ -1,10 +1,9 @@
 """
 Pipeline entry point for ENTSO-E ingestion.
 Calls fetcher.py for each of the 7 series and saves raw parquets to data/raw/.
-Run from the project root: python scripts/01_ingest.py [--stress]
+Run from the project root: python scripts/01_ingest.py
 """
 
-import argparse
 import os
 import sys
 from pathlib import Path
@@ -48,22 +47,12 @@ def run(client: EntsoePandasClient, start, end, out_dir: Path) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Fetch ENTSO-E raw data for DE_LU.")
-    parser.add_argument("--stress", action="store_true", help="Also fetch the 2019-2020 stress window")
-    args = parser.parse_args()
-
     load_dotenv()
     client = EntsoePandasClient(api_key=os.environ["ENTSOE_API_KEY"])
 
     print("Fetching train+test window "
           f"({constants.TRAIN_START.date()} → {constants.TEST_END.date()})...")
     run(client, constants.TRAIN_START, constants.TEST_END, PROJECT_ROOT / constants.RAW_DATA_DIR)
-
-    if args.stress:
-        print("\nFetching stress window "
-              f"({constants.STRESS_START.date()} → {constants.STRESS_END.date()})...")
-        run(client, constants.STRESS_START, constants.STRESS_END,
-            PROJECT_ROOT / constants.RAW_DATA_DIR / "stress")
 
 
 if __name__ == "__main__":
